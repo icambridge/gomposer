@@ -36,6 +36,10 @@ type Downloads struct {
 }
 
 type Autoload struct {
+	ClassMap []string          `json:"classmap"`
+	Files    []string          `json:"files"`
+	Psr0     map[string]string `json:"psr-0"`
+	Psr4     map[string]string `json:"psr-4"`
 }
 
 // TODO rename since this going to be the name composer.json
