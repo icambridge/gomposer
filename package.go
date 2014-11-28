@@ -1,6 +1,43 @@
 package gomposer
 
-type Package struct {
+import (
+	"bytes"
+	"encoding/json"
+	"net/http"
+	"net/url"
+	"strings"
+)
+
+// TODO reanme
+type PackageRepository struct {
+	BaseURL *url.URL
+
+	client *http.Client
+}
+
+func (r *PackageRepository) Find(packageName string) (*Packages, error) {
+	u, err := url.Parse(strings.TrimRight(r.BaseURL.String(), "/") + "/" + packageName + ".json")
+
+	if err != nil {
+		return nil, err
+	}
+
+	buf := new(bytes.Buffer)
+	req, err := http.NewRequest("GET", u.String(), buf)
+
+	resp, err := r.client.Do(req)
+
+	if err != nil {
+		return nil, err
+	}
+
+	output := &Packages{}
+	json.NewDecoder(resp.Body).Decode(output)
+
+	return output, nil
+}
+
+type Packages struct {
 	Name        string       `json:"name"`
 	Description string       `json:"description"`
 	Time        string       `json:"time"`
