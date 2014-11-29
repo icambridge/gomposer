@@ -5,16 +5,13 @@ import (
 
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"reflect"
 	"testing"
 )
 
-func getHttpClient(server *httptest.Server) HttpClient {
+func getHttpClient(server *httptest.Server) *HttpClient {
 
-	url, _ := url.Parse(server.URL)
-	httpClient := http.DefaultClient
-	hc := HttpClient{BaseURL: url, client: httpClient}
+	hc, _ := NewHttpClient(server.URL)
 
 	return hc
 }

@@ -2,7 +2,7 @@ package gomposer
 
 // TODO reanme
 type PackageRepository struct {
-	client HttpClient
+	client *HttpClient
 }
 
 func (r *PackageRepository) Find(packageName string) (*Packages, error) {

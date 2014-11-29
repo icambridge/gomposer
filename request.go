@@ -10,6 +10,20 @@ import (
 	"strings"
 )
 
+func NewHttpClient(baseUrl string) (*HttpClient, error) {
+
+	url, err := url.Parse(baseUrl)
+
+	if err != nil {
+		return nil, err
+	}
+
+	httpClient := http.DefaultClient
+	hc := HttpClient{BaseURL: url, client: httpClient}
+
+	return &hc, nil
+}
+
 type Client interface {
 	Request(method string, url string) error
 }
