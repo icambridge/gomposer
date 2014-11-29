@@ -19,8 +19,19 @@ func (dr DependencyResolver) AddPackages(packageName string, versions []string) 
 
 func (dr DependencyResolver) Resolve() map[string]string {
 	m := make(map[string]string)
-	for k, _ := range dr.versions {
-		m[k] = dr.versions[k][0]
+	for packageName, contraintList := range dr.requiredPackages {
+		versions := dr.versions[packageName]
+		for _, contraint := range contraintList {
+			for i, version := range versions {
+				if contraint.Match(version) == false {
+					versions[i], versions = versions[len(versions)-1], versions[:len(versions)-1]
+				}
+			}
+		}
+
+		m[packageName] = versions[0]
+
+
 	}
 	return m
 }
