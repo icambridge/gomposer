@@ -9,7 +9,7 @@ func (r *PackageRepository) Find(packageName string) (*PackageInfo, error) {
 
 	output := &PackageInfo{}
 
-	err := r.client.Request("GET", "/phpunit.json", output)
+	err := r.client.Request("GET", "/"+packageName+".json", output)
 
 	return output, err
 }
