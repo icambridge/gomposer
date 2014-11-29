@@ -21,7 +21,7 @@ func TestPackageRepository_Find(t *testing.T) {
 
 	mux, server := getMuxAndServer()
 	apiHit := false
-	mux.HandleFunc("/phpunit.json", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/phpunit/phpunit.json", func(w http.ResponseWriter, r *http.Request) {
 		if m := "GET"; m != r.Method {
 			t.Errorf("Request method = %v, expected %v", r.Method, m)
 		}
@@ -31,7 +31,7 @@ func TestPackageRepository_Find(t *testing.T) {
 
 	hc := getHttpClient(server)
 	packageRepo := PackageRepository{client: hc}
-	pkg, err := packageRepo.Find("phpunit")
+	pkg, err := packageRepo.Find("phpunit/phpunit")
 
 	if err != nil {
 		t.Errorf("Didn't expect an error but got '%s'", err)
