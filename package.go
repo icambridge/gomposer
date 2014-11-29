@@ -5,16 +5,16 @@ type PackageRepository struct {
 	client *HttpClient
 }
 
-func (r *PackageRepository) Find(packageName string) (*Packages, error) {
+func (r *PackageRepository) Find(packageName string) (*PackageInfo, error) {
 
-	output := &Packages{}
+	output := &PackageInfo{}
 
 	err := r.client.Request("GET", "/phpunit.json", output)
 
 	return output, err
 }
 
-type Packages struct {
+type PackageInfo struct {
 	Name        string       `json:"name"`
 	Description string       `json:"description"`
 	Time        string       `json:"time"`
