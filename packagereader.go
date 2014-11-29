@@ -1,9 +1,9 @@
 package gomposer
 
 import (
-    "os"
+	"os"
 
-    "encoding/json"
+	"encoding/json"
 )
 
 type Reader interface {
@@ -15,15 +15,15 @@ type PackageReader struct {
 
 func (pr PackageReader) Read(filename string) (*Version, error) {
 
-    buf, err := os.Open(filename)
+	buf, err := os.Open(filename)
 
-    if err != nil {
-        return nil, err
-    }
+	if err != nil {
+		return nil, err
+	}
 
-    output := &Version{}
+	output := &Version{}
 
-    json.NewDecoder(buf).Decode(output)
+	json.NewDecoder(buf).Decode(output)
 
 	return output, nil
 }
