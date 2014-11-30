@@ -22,28 +22,31 @@ func (dr DependencyResolver) Resolve() map[string]string {
 	for packageName, contraintList := range dr.requiredPackages {
 		versions := dr.versions[packageName]
 		notValid := []string{}
-		for _, contraint := range contraintList {
-			for _, version := range versions {
-				if contraint.Match(version) == false {
+		for _, version := range versions {
+			for _, contraint := range contraintList {
+				if contraint.Match(version) != true {
 					notValid = append(notValid, version)
 				}
 			}
-		}
-		m := make(map[string]int)
-
-		for _,version := range notValid {
-			m[version]++
-		}
-		var validVersions []string
-		for _, version := range versions {
-			if m[version] > 0 {
-				m[version]--
-				continue
+			m := make(map[string]int)
+			for _, version := range notValid {
+				m[version]++
 			}
-			validVersions = append(validVersions, version)
-		}
-		output[packageName] = validVersions[0]
+			var validVersions []string
+			for _, version := range versions {
+				if m[version] > 0 {
+					m[version]--
+					continue
+				}
+				validVersions = append(validVersions, version)
+			}
 
+			versions = validVersions
+			notValid = []string{}
+		}
+		//
+
+		output[packageName] = versions[0]
 
 	}
 	return output
