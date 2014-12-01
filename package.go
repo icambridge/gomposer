@@ -14,16 +14,21 @@ func (r *PackageRepository) Find(packageName string) (*PackageInfo, error) {
 	return output, err
 }
 
+type Lock struct {
+	Packages    []Version `json:"packages"`
+	PackagesDev []Version `json:"packages-dev"`
+}
+
 type PackageInfo struct {
-	Name        string       `json:"name"`
-	Description string       `json:"description"`
-	Time        string       `json:"time"`
-	Maintainers []Maintainer `json:"maintainers"`
-	Versions    map[string]Version    `json:"versions"`
-	Type        string       `json:"type"`
-	Repository  string       `json:"repository"`
-	Downloads   Downloads    `json:"downloads"`
-	Favers      int          `json:"favers"`
+	Name        string             `json:"name"`
+	Description string             `json:"description"`
+	Time        string             `json:"time"`
+	Maintainers []Maintainer       `json:"maintainers"`
+	Versions    map[string]Version `json:"versions"`
+	Type        string             `json:"type"`
+	Repository  string             `json:"repository"`
+	Downloads   Downloads          `json:"downloads"`
+	Favers      int                `json:"favers"`
 }
 
 type Maintainer struct {

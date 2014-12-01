@@ -13,6 +13,7 @@ func (dr DependencyResolver) AddRequirement(packageName string, versionRule stri
 	cg := version.NewConstrainGroupFromString(versionRule)
 	dr.requiredPackages[packageName] = append(dr.requiredPackages[packageName], cg)
 }
+
 // TODO rename
 func (dr DependencyResolver) AddPackages(packageName string, versions []string) {
 	dr.versions[packageName] = versions
