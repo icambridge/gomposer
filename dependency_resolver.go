@@ -13,6 +13,7 @@ func (dr DependencyResolver) AddRequirement(packageName string, versionRule stri
 	cg := version.NewConstrainGroupFromString(versionRule)
 	dr.requiredPackages[packageName] = append(dr.requiredPackages[packageName], cg)
 }
+// TODO rename
 func (dr DependencyResolver) AddPackages(packageName string, versions []string) {
 	dr.versions[packageName] = versions
 }
@@ -28,6 +29,7 @@ func (dr DependencyResolver) Resolve() map[string]string {
 					notValid = append(notValid, version)
 				}
 			}
+			// TODO clean
 			m := make(map[string]int)
 			for _, version := range notValid {
 				m[version]++
@@ -45,8 +47,10 @@ func (dr DependencyResolver) Resolve() map[string]string {
 			notValid = []string{}
 		}
 		//
+		if len(versions) > 0 {
 
-		output[packageName] = versions[0]
+			output[packageName] = versions[0]
+		}
 
 	}
 	return output

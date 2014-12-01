@@ -19,7 +19,7 @@ type PackageInfo struct {
 	Description string       `json:"description"`
 	Time        string       `json:"time"`
 	Maintainers []Maintainer `json:"maintainers"`
-	Versions    []Version    `json:"versions"`
+	Versions    map[string]Version    `json:"versions"`
 	Type        string       `json:"type"`
 	Repository  string       `json:"repository"`
 	Downloads   Downloads    `json:"downloads"`
