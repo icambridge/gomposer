@@ -37,9 +37,9 @@ func Test_ProcessHit_All_Directly_Required(t *testing.T) {
 
 	m := make(map[string]*PackageInfo)
 	hc := getHttpClient(server)
-	pr := PackageRepository{client: hc}
+	pr := PackageRepository{Client: hc}
 
-	p := &Process{packageRepo: &pr, packages: m}
+	p := &Process{PackageRepo: &pr, Packages: m}
 	p.Process(v)
 
 	if apiHitSymfony == false || apiHitDoctrine == false {
@@ -80,9 +80,9 @@ func Test_ProcessHit_All_Required_Including_Vendors_Once_Each(t *testing.T) {
 	}
 	m := make(map[string]*PackageInfo)
 	hc := getHttpClient(server)
-	pr := PackageRepository{client: hc}
+	pr := PackageRepository{Client: hc}
 
-	p := &Process{packageRepo: &pr, packages: m}
+	p := &Process{PackageRepo: &pr, Packages: m}
 	p.Process(v)
 
 	if apiHitTwig != 1 {
@@ -122,9 +122,9 @@ func Test_Process_Returns_CorrectDependencies(t *testing.T) {
 	}
 	m := make(map[string]*PackageInfo)
 	hc := getHttpClient(server)
-	pr := PackageRepository{client: hc}
+	pr := PackageRepository{Client: hc}
 
-	p := &Process{packageRepo: &pr, packages: m}
+	p := &Process{PackageRepo: &pr, Packages: m}
 	actual := p.Process(v)
 
 	expected := &Lock{

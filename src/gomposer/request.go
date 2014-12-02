@@ -1,7 +1,7 @@
 package gomposer
 
 import (
-	"bytes"
+ //	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -46,16 +46,21 @@ func (hc HttpClient) Request(method string, uri string, output interface{}) erro
 		return err
 	}
 
-	buf := new(bytes.Buffer)
-	req, err := http.NewRequest(method, u.String(), buf)
+//	buf := new(bytes.Buffer)
+	resp, err := http.Get(u.String())
 
-	resp, err := hc.client.Do(req)
+	// fmt.Println(u.String())
+	// if err != nil {
+	// 	return err
+	// }
+	// resp, err := hc.client.Do(req)
 
 	if err != nil {
 		return err
 	}
 
-	json.NewDecoder(resp.Body).Decode(output)
 
-	return nil
+	err = json.NewDecoder(resp.Body).Decode(output)
+
+	return err
 }

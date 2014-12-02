@@ -1,12 +1,13 @@
 package gomposer
 
 import (
+	"strings"
 	"github.com/mcuadros/go-version" // TODO remove the need for this to be imported all over the show
 )
 
 type Process struct {
-	packageRepo *PackageRepository
-	packages    map[string]*PackageInfo
+	PackageRepo *PackageRepository
+	Packages    map[string]*PackageInfo
 	dr          *DependencyResolver
 }
 
@@ -23,11 +24,12 @@ func (p Process) Process(packageInfo *Version) *Lock {
 
 	p.inner(packageInfo.Require)
 	// TODO solve this.
+	// Just process all dependencies anyways and then solve.
 	requiredVersions := p.dr.Resolve()
 	l := &Lock{Packages: []Version{}}
 
 	for packageName, versionNum := range requiredVersions {
-		packageInfo := p.packages[packageName].Versions[versionNum]
+		packageInfo := p.Packages[packageName].Versions[versionNum]
 		l.Packages = append(l.Packages, packageInfo)
 	}
 
@@ -36,7 +38,6 @@ func (p Process) Process(packageInfo *Version) *Lock {
 
 func (p Process) inner(require map[string]string) {
 	foundPackages := p.getRequire(require)
-
 	if len(foundPackages) == 0 {
 		return
 	}
@@ -44,7 +45,7 @@ func (p Process) inner(require map[string]string) {
 	requiredVersions := p.dr.Resolve()
 
 	for packageName, versionNum := range requiredVersions {
-		packageInfo := p.packages[packageName].Versions[versionNum]
+		packageInfo := p.Packages[packageName].Versions[versionNum]
 		p.inner(packageInfo.Require)
 	}
 }
@@ -52,7 +53,7 @@ func (p Process) inner(require map[string]string) {
 func (p Process) addPackages(packages map[string]*PackageInfo) {
 
 	for packageName, packageInfo := range packages {
-		p.packages[packageName] = packageInfo
+		p.Packages[packageName] = packageInfo
 		versions := make([]string, 0, len(packageInfo.Versions))
 		for versionNum := range packageInfo.Versions {
 			versions = append(versions, versionNum)
@@ -67,10 +68,15 @@ func (p Process) getRequire(require map[string]string) map[string]*PackageInfo {
 
 		p.dr.AddRequirement(packageName, rule)
 
-		if _, ok := p.packages[packageName]; ok {
+		if _, ok := p.Packages[packageName]; ok {
 			continue
 		}
-		packageInfo, err := p.packageRepo.Find(packageName)
+
+		if packageName == "php" || strings.HasPrefix(packageName, "ext-") || strings.HasPrefix(packageName, "lib-") {
+			continue
+		}
+
+		packageInfo, err := p.PackageRepo.Find(packageName)
 
 		if err != nil {
 			// Todo improve error handling

@@ -2,21 +2,25 @@ package gomposer
 
 // TODO reanme
 type PackageRepository struct {
-	client *HttpClient
+	Client *HttpClient
 }
 
 func (r *PackageRepository) Find(packageName string) (*PackageInfo, error) {
 
-	output := &PackageInfo{}
+	output := &PackageDetail{}
 
-	err := r.client.Request("GET", "/"+packageName+".json", output)
+	err := r.Client.Request("GET", "/"+packageName+".json", output)
 
-	return output, err
+	return &output.PackageData, err
 }
 
 type Lock struct {
 	Packages    []Version `json:"packages"`
 	PackagesDev []Version `json:"packages-dev"`
+}
+
+type PackageDetail struct {
+	PackageData PackageInfo `json:"package"`
 }
 
 type PackageInfo struct {
@@ -65,17 +69,17 @@ type Autoload struct {
 type Version struct {
 	Name              string            `json:"name"`
 	Description       string            `json:"description"`
-	Keywords          []string          `json:"keywords"`
-	Homepage          string            `json:"homepage"`
+	// Keywords          []string          `json:"keywords"`
+	// Homepage          string            `json:"homepage"`
 	Version           string            `json:"version"`
-	VersionNormalized string            `json:version_normalized`
-	License           []string          `json:"license"`
-	Authors           Author            `json:"authors"`
+	// VersionNormalized string            `json:"version_normalized"`
+//	License           []string          `json:"license"`
+	Authors           []Author          `json:"authors"`
 	Source            Source            `json:"source"`
 	Dist              Source            `json:"dist"`
-	Type              string            `json:"string"`
-	Time              string            `json:"time"`
-	Autoload          Autoload          `json:"autoload"`
+	// Type              string            `json:"type"`
+	// Time              string            `json:"time"`
+	// Autoload          Autoload          `json:"autoload"`
 	Require           map[string]string `json:"require"`
 	RequireDev        map[string]string `json:"require-dev"`
 	Suggest           map[string]string `json:"suggest"`
