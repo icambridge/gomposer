@@ -2,7 +2,6 @@ package gomposer
 
 import (
 	"sort"
-	"fmt"
 	"github.com/mcuadros/go-version"
 )
 
@@ -18,6 +17,8 @@ func (dr DependencyResolver) AddRequirement(packageName string, versionRule stri
 
 // TODO rename
 func (dr DependencyResolver) AddPackages(packageName string, versions []string) {
+
+	sort.Sort(sort.Reverse(sort.StringSlice(versions)))
 	dr.versions[packageName] = versions
 }
 
@@ -26,11 +27,6 @@ func (dr DependencyResolver) Resolve() map[string]string {
 	for packageName, contraintList := range dr.requiredPackages {
 		versions := dr.versions[packageName]
 		for _, version := range versions {
-			// get slice of version numbers
-			// sort
-			// loops := []int{5, 2, 6, 3, 1, 4} // unsorted
-			sort.Sort(sort.Reverse(sort.StringSlice(version)))
-			fmt.Println(version)
 			failed := 0
 			for _, contraint := range contraintList {
 				if contraint.Match(version) != true {

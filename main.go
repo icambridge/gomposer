@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"github.com/codegangsta/cli"
 	"gomposer"
 	"os"
@@ -20,7 +21,6 @@ func main() {
 				r := gomposer.PackageReader{}
 				actual, _ := r.Read("composer.json")
 
-				fmt.Println(fmt.Sprintf("%v", actual))
 				m := make(map[string]*gomposer.PackageInfo)
 				hc, _ := gomposer.NewHttpClient("https://packagist.org/packages/")
 				pr := gomposer.PackageRepository{Client: hc}
@@ -28,8 +28,16 @@ func main() {
 				p := gomposer.Process{PackageRepo: &pr, Packages: m}
 				l := p.Process(actual)
 
+				names := []string{}
+				version := map[string]string{}
 				for _, v := range l.Packages {
-					fmt.Println(v.Name + " " + v.Version)
+					names = append(names, v.Name)
+					version[v.Name] = v.Version
+				}
+
+				sort.Strings(names)
+				for _, name := range names {
+					fmt.Println(name + "->" + version[name])
 				}
 
 			},
