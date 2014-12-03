@@ -81,6 +81,7 @@ type Version struct {
 	// Time              string            `json:"time"`
 	// Autoload          Autoload          `json:"autoload"`
 	Require           map[string]string `json:"require"`
+	Replace           map[string]string `json:"replace"`
 	RequireDev        map[string]string `json:"require-dev"`
 	Suggest           map[string]string `json:"suggest"`
 }

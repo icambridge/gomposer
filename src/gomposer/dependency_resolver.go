@@ -2,12 +2,18 @@ package gomposer
 
 import (
 	"sort"
+	"fmt"
 	"github.com/mcuadros/go-version"
 )
 
 type DependencyResolver struct {
 	requiredPackages map[string][]*version.ConstraintGroup
 	versions         map[string][]string
+	replacedPackages map[string]int
+}
+
+func (dr DependencyResolver) AddReplacement(packageName string) {
+	dr.replacedPackages[packageName] = 1
 }
 
 func (dr DependencyResolver) AddRequirement(packageName string, versionRule string) {
@@ -26,8 +32,17 @@ func (dr DependencyResolver) Resolve() map[string]string {
 	output := make(map[string]string)
 	for packageName, contraintList := range dr.requiredPackages {
 		versions := dr.versions[packageName]
+		_, ok := dr.replacedPackages[packageName];
+
+		if ok {
+			continue
+		}
+
 		for _, version := range versions {
 			failed := 0
+			if len(contraintList) == 0 {
+				fmt.Println("Fails")
+			}
 			for _, contraint := range contraintList {
 				if contraint.Match(version) != true {
 					failed++

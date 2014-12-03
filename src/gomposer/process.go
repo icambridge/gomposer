@@ -17,9 +17,10 @@ func (p Process) Process(packageInfo *Version) *Lock {
 	// TODO inject
 	m := make(map[string][]*version.ConstraintGroup)
 	v := make(map[string][]string)
+	rp := make(map[string]int)
 
 	if p.dr == nil {
-		p.dr = &DependencyResolver{requiredPackages: m, versions: v}
+		p.dr = &DependencyResolver{requiredPackages: m, versions: v, replacedPackages: rp}
 	}
 
 	p.inner(packageInfo.Require)
@@ -55,13 +56,17 @@ func (p Process) addPackages(packages map[string]*PackageInfo) {
 	for packageName, packageInfo := range packages {
 		p.Packages[packageName] = packageInfo
 		versions := make([]string, 0, len(packageInfo.Versions))
-		for versionNum := range packageInfo.Versions {
-			if strings.Contains(versionNum, "RC") || strings.Contains(versionNum, "feature") || strings.Contains(versionNum, "BETA") {
-				continue
+		for versionNum, version := range packageInfo.Versions {
+			//if strings.Contains(versionNum, "RC") || strings.Contains(versionNum, "feature") || strings.Contains(versionNum, "BETA") {
+				//continue
+			//}
+			for replacedPackage, _ := range version.Replace {
+				p.dr.AddReplacement(replacedPackage)
 			}
 			versions = append(versions, versionNum)
 		}
 		p.dr.AddPackages(packageName, versions)
+
 	}
 }
 
