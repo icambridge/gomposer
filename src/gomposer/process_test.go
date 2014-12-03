@@ -16,15 +16,22 @@ func Test_ProcessHit_All_Directly_Required(t *testing.T) {
 		if m := "GET"; m != r.Method {
 			t.Errorf("Request method = %v, expected %v", r.Method, m)
 		}
-		fmt.Fprint(w, `{"name":"symfony/symfony", "versions": {"2.3.5":{ "name": "symfony/symfony", "require": {"twigphp/twig": "2.4.1"}}}}`)
+		fmt.Fprint(w, `{"package":{"name":"symfony/symfony", "versions": {"2.3.5":{ "name": "symfony/symfony", "version": "2.3.5", "require": {"twigphp/twig": "2.4.1"}}}}}}`)
 		apiHitSymfony = true
 	})
 
+	mux.HandleFunc("/twigphp/twig.json", func(w http.ResponseWriter, r *http.Request) {
+		if m := "GET"; m != r.Method {
+			t.Errorf("Request method = %v, expected %v", r.Method, m)
+		}
+		fmt.Fprint(w, `{"package":{"name":"twigphp/twig", "versions": {"2.4.1":{ "name": "twigphp/twig", "version": "2.4.1"}}}}`)
+
+		})
 	mux.HandleFunc("/doctrine/doctrine.json", func(w http.ResponseWriter, r *http.Request) {
 		if m := "GET"; m != r.Method {
 			t.Errorf("Request method = %v, expected %v", r.Method, m)
 		}
-		fmt.Fprint(w, `{"name":"doctrine/doctrine", "versions": {"2.3.5":{ "name": "doctrine/doctrine", "require": {"twigphp/twig": "2.4.1"}}}}`)
+		fmt.Fprint(w, `{"package":{"name":"doctrine/doctrine", "versions": {"2.3.5":{ "name": "doctrine/doctrine", "version": "2.3.5", "require": {"twigphp/twig": "2.4.1"}}}}}}`)
 		apiHitDoctrine = true
 	})
 
@@ -55,21 +62,21 @@ func Test_ProcessHit_All_Required_Including_Vendors_Once_Each(t *testing.T) {
 		if m := "GET"; m != r.Method {
 			t.Errorf("Request method = %v, expected %v", r.Method, m)
 		}
-		fmt.Fprint(w, `{"name":"symfony/symfony", "versions": {"2.3.5":{ "name": "symfony/symfony", "require": {"twigphp/twig": "2.4.1"}}}}`)
+		fmt.Fprint(w, `{"package":{"name":"symfony/symfony", "versions": {"2.3.5":{ "name": "symfony/symfony", "version": "2.3.5", "require": {"twigphp/twig": "2.4.1"}}}}}`)
 	})
 
 	mux.HandleFunc("/twigphp/twig.json", func(w http.ResponseWriter, r *http.Request) {
 		if m := "GET"; m != r.Method {
 			t.Errorf("Request method = %v, expected %v", r.Method, m)
 		}
-		fmt.Fprint(w, `{"name":"twigphp/twig", "versions": {"2.4.1":{ "name": "twigphp/twig"}}}`)
+		fmt.Fprint(w, `{"package":{"name":"twigphp/twig", "versions": {"2.4.1":{ "name": "twigphp/twig", "version": "2.4.1"}}}}`)
 		apiHitTwig++
 	})
 	mux.HandleFunc("/doctrine/doctrine.json", func(w http.ResponseWriter, r *http.Request) {
 		if m := "GET"; m != r.Method {
 			t.Errorf("Request method = %v, expected %v", r.Method, m)
 		}
-		fmt.Fprint(w, `{"name":"doctrine/doctrine", "versions": {"2.3.5":{ "name": "doctrine/doctrine", "require": {"twigphp/twig": "2.4.1"}}}}`)
+		fmt.Fprint(w, `{"package":{"name":"doctrine/doctrine", "versions": {"2.3.5":{ "name": "doctrine/doctrine", "version": "2.3.5", "require": {"twigphp/twig": "2.4.1"}}}}}`)
 	})
 
 	v := &Version{
@@ -97,21 +104,21 @@ func Test_Process_Returns_CorrectDependencies(t *testing.T) {
 		if m := "GET"; m != r.Method {
 			t.Errorf("Request method = %v, expected %v", r.Method, m)
 		}
-		fmt.Fprint(w, `{"name":"symfony/symfony", "versions": {"2.3.5":{ "name": "symfony/symfony", "version": "2.3.5", "require": {"twigphp/twig": "2.4.1"}}}}`)
+		fmt.Fprint(w, `{"package":{"name":"symfony/symfony", "versions": {"2.3.5":{ "name": "symfony/symfony", "version": "2.3.5", "require": {"twigphp/twig": "2.4.1"}}}}}`)
 	})
 
 	mux.HandleFunc("/twigphp/twig.json", func(w http.ResponseWriter, r *http.Request) {
 		if m := "GET"; m != r.Method {
 			t.Errorf("Request method = %v, expected %v", r.Method, m)
 		}
-		fmt.Fprint(w, `{"name":"twigphp/twig", "versions": {"2.4.1":{ "name": "twigphp/twig", "version": "2.4.1"}}}`)
+		fmt.Fprint(w, `{"package":{"name":"twigphp/twig", "versions": {"2.4.1":{ "name": "twigphp/twig", "version": "2.4.1"}}}}`)
 	})
 
 	mux.HandleFunc("/doctrine/doctrine.json", func(w http.ResponseWriter, r *http.Request) {
 		if m := "GET"; m != r.Method {
 			t.Errorf("Request method = %v, expected %v", r.Method, m)
 		}
-		fmt.Fprint(w, `{"name":"doctrine/doctrine", "versions": {"2.3.5":{ "name": "doctrine/doctrine", "version": "2.3.5", "require": {"twigphp/twig": "2.4.1"}}}}`)
+		fmt.Fprint(w, `{"package":{"name":"doctrine/doctrine", "versions": {"2.3.5":{ "name": "doctrine/doctrine", "version": "2.3.5", "require": {"twigphp/twig": "2.4.1"}}}}}`)
 	})
 
 	v := &Version{
@@ -145,6 +152,10 @@ func Test_Process_Returns_CorrectDependencies(t *testing.T) {
 			},
 		},
 	}
+	// TODO  look into correctness of this. Failed with
+	/* --- FAIL: Test_Process_Returns_CorrectDependencies (0.01 seconds)
+	process_test.go:156: Response actual = &{[{doctrine/doctrine  2.3.5 [] {   } {   } map[twigphp/twig:2.4.1] map[] map[] map[]} {twigphp/twig  2.4.1 [] {   } {   } map[] map[] map[] map[]} {symfony/symfony  2.3.5 [] {   } {   } map[twigphp/twig:2.4.1] map[] map[] map[]}] []}, expected &{[{symfony/symfony  2.3.5 [] {   } {   } map[twigphp/twig:2.4.1] map[] map[] map[]} {doctrine/doctrine  2.3.5 [] {   } {   } map[twigphp/twig:2.4.1] map[] map[] map[]} {twigphp/twig  2.4.1 [] {   } {   } map[] map[] map[] map[]}] []}
+	FAIL */
 	if !reflect.DeepEqual(actual, expected) {
 		t.Errorf("Response actual = %v, expected %v", actual, expected)
 	}

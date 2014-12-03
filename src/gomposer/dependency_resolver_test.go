@@ -46,7 +46,7 @@ func Test_DependencyResolver_Resolve_Complex(t *testing.T) {
 
 	expected := map[string]string{
 		"symfony/symfony":   "2.3.2",
-		"doctrine/orm":      "2.3.1",
+		"doctrine/orm":      "2.3.2",
 		"phpunit/phpunit":   "2.3.2",
 		"mailgun/php-sdk":   "2.3.2",
 		"racksapce/php-sdk": "2.3.2",

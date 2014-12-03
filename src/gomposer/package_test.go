@@ -21,7 +21,7 @@ func TestPackageRepository_Find(t *testing.T) {
 
 	mux, server := getMuxAndServer()
 	apiHit := false
-	mux.HandleFunc("/phpunit/phpunit.json", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/magetest/magento-behat-extension.json", func(w http.ResponseWriter, r *http.Request) {
 		if m := "GET"; m != r.Method {
 			t.Errorf("Request method = %v, expected %v", r.Method, m)
 		}
@@ -31,7 +31,7 @@ func TestPackageRepository_Find(t *testing.T) {
 
 	hc := getHttpClient(server)
 	packageRepo := PackageRepository{Client: hc}
-	pkg, err := packageRepo.Find("phpunit/phpunit")
+	pkg, err := packageRepo.Find("magetest/magento-behat-extension")
 
 	if err != nil {
 		t.Errorf("Didn't expect an error but got '%s'", err)
@@ -40,7 +40,7 @@ func TestPackageRepository_Find(t *testing.T) {
 	if apiHit == false {
 		t.Errorf("Didn't hit api")
 	}
-	expectedName := "phpunit/phpunit"
+	expectedName := "magetest/magento-behat-extension"
 	if pkg.Name != expectedName {
 		t.Errorf("Expected '%s' but got '%s'", expectedName, pkg.Name)
 	}
