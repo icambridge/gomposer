@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"sort"
 	"github.com/codegangsta/cli"
-	"gomposer"
 	"os"
 )
 
@@ -18,14 +17,14 @@ func main() {
 			Usage: "Updates",
 			Action: func(c *cli.Context) {
 
-				r := gomposer.PackageReader{}
+				r := PackageReader{}
 				actual, _ := r.Read("composer.json")
 
-				m := make(map[string]*gomposer.PackageInfo)
-				hc, _ := gomposer.NewHttpClient("https://packagist.org/packages/")
-				pr := gomposer.PackageRepository{Client: hc}
+				m := make(map[string]*PackageInfo)
+				hc, _ := NewHttpClient("https://packagist.org/packages/")
+				pr := PackageRepository{Client: hc}
 
-				p := gomposer.Process{PackageRepo: &pr, Packages: m}
+				p := Process{PackageRepo: &pr, Packages: m}
 				l := p.Process(actual)
 
 				names := []string{}
