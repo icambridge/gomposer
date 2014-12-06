@@ -1,7 +1,7 @@
 package gomposer
 
 import (
-    "github.com/mcuadros/go-version"
+	"github.com/mcuadros/go-version"
 )
 
 type VersionSlice []string

@@ -145,7 +145,7 @@ func Test_Process_Returns_CorrectDependencies(t *testing.T) {
 				Name:    "symfony/symfony",
 				Version: "2.3.5",
 				Require: map[string]string{"twigphp/twig": "2.4.1"},
-				},
+			},
 			Version{
 				Name:    "twigphp/twig",
 				Version: "2.4.1",

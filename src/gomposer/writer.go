@@ -1,20 +1,20 @@
 package gomposer
 
 import (
-    "fmt"
-    "encoding/json"
-    "os"
+	"encoding/json"
+	"fmt"
+	"os"
 )
 
 func WriteLock(lock *Lock) {
 
-    b, err := json.Marshal(lock)
+	b, err := json.Marshal(lock)
 
-    if err != nil {
-        fmt.Println("error:", err)
-    }
+	if err != nil {
+		fmt.Println("error:", err)
+	}
 
-    f, err := os.Create("composer.test.lock")
+	f, err := os.Create("composer.test.lock")
 
-    f.Write(b)
+	f.Write(b)
 }

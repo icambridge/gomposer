@@ -20,7 +20,7 @@ func (dr DependencyResolver) AddReplacement(packageName string) {
 func (dr DependencyResolver) AddRequirement(packageName string, versionRule string) {
 
 	cg := version.NewConstrainGroupFromString(versionRule)
-	 _, ok := dr.requiredPackages[packageName]
+	_, ok := dr.requiredPackages[packageName]
 	if !ok {
 		dr.requiredPackages[packageName] = map[string]*version.ConstraintGroup{}
 	}
@@ -33,7 +33,6 @@ func (dr DependencyResolver) AddPackages(packageName string, versions []string) 
 	sort.Sort(sort.Reverse(VersionSlice(versions)))
 	dr.versions[packageName] = versions
 }
-
 
 func (dr DependencyResolver) Resolve() map[string]string {
 	output := make(map[string]string)
@@ -56,7 +55,7 @@ func (dr DependencyResolver) Resolve() map[string]string {
 			for _, contraint := range contraintList {
 				if contraint.Match(version) != true {
 					failed++
-					// if failed check to see if 
+					// if failed check to see if
 					break
 					// step over. We can't use since it's failed.
 					// Remove from list so we don't check againist it again.

@@ -2,8 +2,8 @@ package gomposer
 
 import (
 	"github.com/mcuadros/go-version" // TODO remove the need for this to be imported all over the show
-	"strings"
 	"sort"
+	"strings"
 )
 
 type Process struct {
@@ -31,7 +31,7 @@ func (p Process) Process(packageInfo *Version) *Lock {
 	return p.generateLock(requiredVersions)
 }
 
-func (p Process) generateLock(requiredVersions map[string]string) (*Lock){
+func (p Process) generateLock(requiredVersions map[string]string) *Lock {
 	l := &Lock{Packages: []Version{}}
 
 	names := []string{}
@@ -49,7 +49,6 @@ func (p Process) generateLock(requiredVersions map[string]string) (*Lock){
 
 	return l
 }
-
 
 func (p Process) inner(require map[string]string) {
 	foundPackages := p.getRequire(require)

@@ -1,11 +1,16 @@
 package gomposer
 
+import (
+	"github.com/mcuadros/go-version"
+)
+
 // TODO reanme
 type PackageRepository struct {
-	Client *HttpClient
-	Packages map[string]map[string]*Version
+	Client   *HttpClient
+	Packages map[string]map[string]Version
 }
- // TODO remove
+
+// TODO remove
 func (r *PackageRepository) Find(packageName string) (*PackageInfo, error) {
 
 	output := &PackageDetail{}
@@ -15,9 +20,36 @@ func (r *PackageRepository) Find(packageName string) (*PackageInfo, error) {
 	return &output.PackageData, err
 }
 
-func (r *PackageRepository) Get(packageName, rule string) (map[string]*Version, error) {
+func (r *PackageRepository) Get(packageName, rule string) (map[string]Version, error) {
 
-	return nil, nil
+	if r.Packages == nil {
+		r.Packages = make(map[string]map[string]Version)
+	}
+
+	start, ok := r.Packages[packageName]
+
+	if !ok {
+		packageInfo, err := r.Find(packageName)
+
+		if err != nil {
+			return nil, err
+		}
+
+		start = packageInfo.Versions
+	}
+
+	m := map[string]Version{}
+	cg := version.NewConstrainGroupFromString(rule)
+
+	for k, v := range start {
+		if cg.Match(k) {
+			m[k] = v
+		}
+	}
+
+	r.Packages[packageName] = m
+
+	return m, nil
 
 }
 

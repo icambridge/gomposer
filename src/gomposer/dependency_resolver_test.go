@@ -8,7 +8,7 @@ import (
 
 func Test_DependencyResolver_Resolve(t *testing.T) {
 
-  m := make(map[string]map[string]*version.ConstraintGroup)
+	m := make(map[string]map[string]*version.ConstraintGroup)
 	v := make(map[string][]string)
 	dr := DependencyResolver{requiredPackages: m, versions: v}
 
@@ -25,7 +25,7 @@ func Test_DependencyResolver_Resolve(t *testing.T) {
 
 func Test_DependencyResolver_Resolve_Multiple(t *testing.T) {
 
-  m := make(map[string]map[string]*version.ConstraintGroup)
+	m := make(map[string]map[string]*version.ConstraintGroup)
 	v := make(map[string][]string)
 	dr := DependencyResolver{requiredPackages: m, versions: v}
 
@@ -43,7 +43,7 @@ func Test_DependencyResolver_Resolve_Multiple(t *testing.T) {
 
 func Test_DependencyResolver_Resolve_Complex(t *testing.T) {
 
-  m := make(map[string]map[string]*version.ConstraintGroup)
+	m := make(map[string]map[string]*version.ConstraintGroup)
 	v := make(map[string][]string)
 	dr := DependencyResolver{requiredPackages: m, versions: v}
 
