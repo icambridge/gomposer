@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"github.com/codegangsta/cli"
+	"github.com/icambridge/go-dependency"
 	"gomposer"
 	"os"
 )
@@ -20,21 +22,28 @@ func main() {
 				r := gomposer.PackageReader{}
 				actual, _ := r.Read("composer.json")
 
-				m := make(map[string]*gomposer.PackageInfo)
+				d := gomposer.ToDependency(actual)
+
 				hc, _ := gomposer.NewHttpClient("https://packagist.org/packages/")
 				pr := gomposer.PackageRepository{Client: hc}
 
-				p := gomposer.Process{PackageRepo: &pr, Packages: m}
-				l := p.Process(actual)
+				repo := dependency.GetNewRepo(pr)
 
-				names := []string{}
-				version := map[string]string{}
-				for _, v := range l.Packages {
-					names = append(names, v.Name)
-					version[v.Name] = v.Version
+				ads := dependency.GetPackageNames(d)
+				repo.GetAll(ads)
+
+				fmt.Println(repo.Dependencies)
+
+
+				s := dependency.NewSolver(repo.Dependencies)
+				required, err := s.Solve(d)
+
+				if err != nil {
+					fmt.Println(err)
 				}
 
-				gomposer.WriteLock(l)
+				fmt.Println(required)
+				// TODO convert required into Lock file.
 			},
 		},
 	}

@@ -1,7 +1,8 @@
 package gomposer
 
 import (
-	"github.com/mcuadros/go-version"
+	"strings"
+	"github.com/icambridge/go-dependency"
 )
 
 // TODO reanme
@@ -11,16 +12,15 @@ type PackageRepository struct {
 }
 
 // TODO remove
-func (r *PackageRepository) Find(packageName string) (*PackageInfo, error) {
+func (r PackageRepository) Find(packageName string) (*PackageInfo, error) {
 
 	output := &PackageDetail{}
 
 	err := r.Client.Request("GET", "/"+packageName+".json", output)
-
 	return &output.PackageData, err
 }
 
-func (r *PackageRepository) Get(packageName, rule string) (map[string]Version, error) {
+func (r PackageRepository) Get(packageName string) (map[string]dependency.Dependency, error) {
 
 	if r.Packages == nil {
 		r.Packages = make(map[string]map[string]Version)
@@ -37,20 +37,42 @@ func (r *PackageRepository) Get(packageName, rule string) (map[string]Version, e
 
 		start = packageInfo.Versions
 	}
-
-	m := map[string]Version{}
-	cg := version.NewConstrainGroupFromString(rule)
-
+	m := map[string]dependency.Dependency{}
 	for k, v := range start {
-		if cg.Match(k) {
-			m[k] = v
-		}
-	}
 
-	r.Packages[packageName] = m
+		m[k] = ToDependency(&v)
+	}
 
 	return m, nil
 
+}
+
+func ToDependency(pi *Version) dependency.Dependency {
+	requires := map[string]string{}
+
+	for reqPackageName, reqPackageVersion := range pi.Require {
+		if !IsPackagist(reqPackageName) {
+			continue
+		}
+		requires[reqPackageName] = reqPackageVersion
+	}
+	// todo move to function
+	for reqPackageName, reqPackageVersion := range pi.RequireDev {
+		if !IsPackagist(reqPackageName) {
+			continue
+		}
+		requires[reqPackageName] = reqPackageVersion
+	}
+	return dependency.Dependency{
+			Name: pi.Name,
+			Version: pi.Version,
+			Requires: requires,
+			Replaces: pi.Replace,
+		}
+}
+
+func IsPackagist(name string) bool {
+	return strings.Contains(name, "/")
 }
 
 type Lock struct {
