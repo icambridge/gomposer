@@ -1,8 +1,12 @@
 package gomposer
 
 import (
+	"encoding/json"
+	"fmt"
 	"strings"
 	"github.com/icambridge/go-dependency"
+	"os"
+//	"io/ioutil"
 )
 
 // TODO reanme
@@ -13,10 +17,29 @@ type PackageRepository struct {
 
 // TODO remove
 func (r PackageRepository) Find(packageName string) (*PackageInfo, error) {
+	packageName = strings.ToLower(packageName)
+	prepFilename := strings.NewReplacer("/", "$").Replace(packageName)
+//	err := nil
+	filename := fmt.Sprintf("/Users/icambridge/.composer/cache/repo/https---packagist.org/provider-%s.json", prepFilename)
+
 
 	output := &PackageDetail{}
+	if _, found := os.Stat(filename); os.IsNotExist(found) {
 
-	err := r.Client.Request("GET", "/"+packageName+".json", output)
+		err := r.Client.Request("GET", "/"+packageName+".json", output)
+
+		return &output.PackageData, err
+	}
+
+	cached := &PackageCache{}
+	buf, err := os.Open(filename)
+
+		if err != nil {
+			return nil, err
+		}
+
+	err = json.NewDecoder(buf).Decode(cached)
+	output.PackageData = PackageInfo{Versions: cached.PackageData[packageName]}
 	return &output.PackageData, err
 }
 
@@ -41,6 +64,7 @@ func (r PackageRepository) Get(packageName string) (map[string]dependency.Depend
 	for k, v := range start {
 
 		m[k] = ToDependency(&v)
+
 	}
 
 	return m, nil
@@ -57,12 +81,12 @@ func ToDependency(pi *Version) dependency.Dependency {
 		requires[reqPackageName] = reqPackageVersion
 	}
 	// todo move to function
-	for reqPackageName, reqPackageVersion := range pi.RequireDev {
-		if !IsPackagist(reqPackageName) {
-			continue
-		}
-		requires[reqPackageName] = reqPackageVersion
-	}
+//	for reqPackageName, reqPackageVersion := range pi.RequireDev {
+//		if !IsPackagist(reqPackageName) {
+//			continue
+//		}
+//		requires[reqPackageName] = reqPackageVersion
+//	}
 	return dependency.Dependency{
 			Name: pi.Name,
 			Version: pi.Version,
@@ -82,6 +106,9 @@ type Lock struct {
 
 type PackageDetail struct {
 	PackageData PackageInfo `json:"package"`
+}
+type PackageCache struct {
+	PackageData map[string]map[string]Version `json:"packages"`
 }
 
 type PackageInfo struct {

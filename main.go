@@ -5,6 +5,7 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/icambridge/go-dependency"
 	"gomposer"
+	"sort"
 	"os"
 )
 
@@ -23,6 +24,12 @@ func main() {
 				actual, _ := r.Read("composer.json")
 
 				d := gomposer.ToDependency(actual)
+//				for reqPackageName, reqPackageVersion := range actual.RequireDev {
+//					if !gomposer.IsPackagist(reqPackageName) {
+//						continue
+//					}
+//					d.Requires[reqPackageName] = reqPackageVersion
+//				}
 
 				hc, _ := gomposer.NewHttpClient("https://packagist.org/packages/")
 				pr := gomposer.PackageRepository{Client: hc}
@@ -32,17 +39,23 @@ func main() {
 				ads := dependency.GetPackageNames(d)
 				repo.GetAll(ads)
 
-				fmt.Println(repo.Dependencies)
 
-
-				s := dependency.NewSolver(repo.Dependencies)
+				s := dependency.NewSolver(repo.Dependencies, repo.Replaces)
 				required, err := s.Solve(d)
 
 				if err != nil {
 					fmt.Println(err)
 				}
 
-				fmt.Println(required)
+				names := []string{}
+				for k, _ := range required {
+					names = append(names, k)
+				}
+				sort.Sort(sort.StringSlice(names))
+
+				for _, v := range names {
+					fmt.Println(fmt.Sprintf("%s->%s", v, required[v]))
+				}
 				// TODO convert required into Lock file.
 			},
 		},
