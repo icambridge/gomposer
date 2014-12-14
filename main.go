@@ -5,8 +5,8 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/icambridge/go-dependency"
 	"gomposer"
-	"sort"
 	"os"
+	"sort"
 )
 
 func main() {
@@ -24,12 +24,6 @@ func main() {
 				actual, _ := r.Read("composer.json")
 
 				d := gomposer.ToDependency(actual)
-//				for reqPackageName, reqPackageVersion := range actual.RequireDev {
-//					if !gomposer.IsPackagist(reqPackageName) {
-//						continue
-//					}
-//					d.Requires[reqPackageName] = reqPackageVersion
-//				}
 
 				hc, _ := gomposer.NewHttpClient("https://packagist.org/packages/")
 				pr := gomposer.PackageRepository{Client: hc}
@@ -38,7 +32,6 @@ func main() {
 
 				ads := dependency.GetPackageNames(d)
 				repo.GetAll(ads)
-
 
 				s := dependency.NewSolver(repo.Dependencies, repo.Replaces)
 				required, err := s.Solve(d)

@@ -8,7 +8,7 @@ import (
 
 type Process struct {
 	PackageRepo *PackageRepository
-	Packages    map[string]*PackageInfo
+	Packages    map[string]PackageInfo
 	dr          *DependencyResolver
 }
 
@@ -64,7 +64,7 @@ func (p Process) inner(require map[string]string) {
 	}
 }
 
-func (p Process) addPackages(packages map[string]*PackageInfo) {
+func (p Process) addPackages(packages map[string]PackageInfo) {
 
 	for packageName, packageInfo := range packages {
 		p.Packages[packageName] = packageInfo
@@ -81,8 +81,8 @@ func (p Process) addPackages(packages map[string]*PackageInfo) {
 	}
 }
 
-func (p Process) getRequire(require map[string]string) map[string]*PackageInfo {
-	packages := map[string]*PackageInfo{}
+func (p Process) getRequire(require map[string]string) map[string]PackageInfo {
+	packages := map[string]PackageInfo{}
 	for packageName, rule := range require {
 
 		p.dr.AddRequirement(packageName, rule)

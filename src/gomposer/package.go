@@ -3,65 +3,71 @@ package gomposer
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 	"github.com/icambridge/go-dependency"
 	"os"
-//	"io/ioutil"
+	"strings"
 )
 
 // TODO reanme
 type PackageRepository struct {
 	Client   *HttpClient
-	Packages map[string]map[string]Version
+	Packages map[string]PackageInfo
 }
 
-// TODO remove
-func (r PackageRepository) Find(packageName string) (*PackageInfo, error) {
-	packageName = strings.ToLower(packageName)
-	prepFilename := strings.NewReplacer("/", "$").Replace(packageName)
-//	err := nil
-	filename := fmt.Sprintf("/Users/icambridge/.composer/cache/repo/https---packagist.org/provider-%s.json", prepFilename)
+func (r PackageRepository) Find(packageName string) (PackageInfo, error) {
 
+	packageName = strings.ToLower(packageName)
+
+	if r.Packages == nil {
+		r.Packages = make(map[string]PackageInfo)
+	}
+	packageData, ok := r.Packages[packageName]
+
+	if ok {
+		return packageData, nil
+	}
+
+	prepFilename := strings.NewReplacer("/", "$").Replace(packageName)
+
+	filename := fmt.Sprintf("/Users/icambridge/.composer/cache/repo/https---packagist.org/provider-%s.json", prepFilename)
 
 	output := &PackageDetail{}
 	if _, found := os.Stat(filename); os.IsNotExist(found) {
 
 		err := r.Client.Request("GET", "/"+packageName+".json", output)
 
-		return &output.PackageData, err
+		return output.PackageData, err
 	}
 
 	cached := &PackageCache{}
 	buf, err := os.Open(filename)
 
-		if err != nil {
-			return nil, err
-		}
+	if err != nil {
+		return output.PackageData, err
+	}
 
 	err = json.NewDecoder(buf).Decode(cached)
 	output.PackageData = PackageInfo{Versions: cached.PackageData[packageName]}
-	return &output.PackageData, err
+
+	r.Packages[packageName] = output.PackageData
+
+	return output.PackageData, err
 }
 
 func (r PackageRepository) Get(packageName string) (map[string]dependency.Dependency, error) {
 
-	if r.Packages == nil {
-		r.Packages = make(map[string]map[string]Version)
-	}
-
-	start, ok := r.Packages[packageName]
+	packageInfo, ok := r.Packages[packageName]
 
 	if !ok {
-		packageInfo, err := r.Find(packageName)
+		r, err := r.Find(packageName)
 
 		if err != nil {
 			return nil, err
 		}
-
-		start = packageInfo.Versions
+		packageInfo = r
 	}
 	m := map[string]dependency.Dependency{}
-	for k, v := range start {
+	for k, v := range packageInfo.Versions {
 
 		m[k] = ToDependency(&v)
 
@@ -80,19 +86,13 @@ func ToDependency(pi *Version) dependency.Dependency {
 		}
 		requires[reqPackageName] = reqPackageVersion
 	}
-	// todo move to function
-//	for reqPackageName, reqPackageVersion := range pi.RequireDev {
-//		if !IsPackagist(reqPackageName) {
-//			continue
-//		}
-//		requires[reqPackageName] = reqPackageVersion
-//	}
+
 	return dependency.Dependency{
-			Name: pi.Name,
-			Version: pi.Version,
-			Requires: requires,
-			Replaces: pi.Replace,
-		}
+		Name:     pi.Name,
+		Version:  pi.Version,
+		Requires: requires,
+		Replaces: pi.Replace,
+	}
 }
 
 func IsPackagist(name string) bool {
