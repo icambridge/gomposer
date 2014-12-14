@@ -14,11 +14,11 @@ type PackageRepository struct {
 	Packages map[string]PackageInfo
 }
 
-func (r PackageRepository) Find(packageName string) (PackageInfo, error) {
+func (r *PackageRepository) Find(packageName string) (PackageInfo, error) {
 
 	packageName = strings.ToLower(packageName)
 
-	if r.Packages == nil {
+	if len(r.Packages) == 0 {
 		r.Packages = make(map[string]PackageInfo)
 	}
 	packageData, ok := r.Packages[packageName]
@@ -36,6 +36,8 @@ func (r PackageRepository) Find(packageName string) (PackageInfo, error) {
 
 		err := r.Client.Request("GET", "/"+packageName+".json", output)
 
+		r.Packages[packageName] = output.PackageData
+
 		return output.PackageData, err
 	}
 
@@ -50,23 +52,19 @@ func (r PackageRepository) Find(packageName string) (PackageInfo, error) {
 	output.PackageData = PackageInfo{Versions: cached.PackageData[packageName]}
 
 	r.Packages[packageName] = output.PackageData
-
-	return output.PackageData, err
+	return r.Packages[packageName], err
 }
 
-func (r PackageRepository) Get(packageName string) (map[string]dependency.Dependency, error) {
+func (r *PackageRepository) Get(packageName string) (map[string]dependency.Dependency, error) {
 
-	packageInfo, ok := r.Packages[packageName]
 
-	if !ok {
-		r, err := r.Find(packageName)
-
-		if err != nil {
-			return nil, err
-		}
-		packageInfo = r
-	}
 	m := map[string]dependency.Dependency{}
+	packageInfo, err := r.Find(packageName)
+
+	if err != nil {
+		return m, err
+	}
+
 	for k, v := range packageInfo.Versions {
 
 		m[k] = ToDependency(&v)

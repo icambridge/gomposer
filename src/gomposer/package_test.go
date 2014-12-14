@@ -3,9 +3,10 @@ package gomposer
 import (
 	"fmt"
 
+	"github.com/icambridge/go-dependency"
+
 	"net/http"
 	"net/http/httptest"
-	"reflect"
 	"testing"
 )
 
@@ -21,7 +22,7 @@ func TestPackageRepository_Find(t *testing.T) {
 
 	mux, server := getMuxAndServer()
 	apiHit := false
-	mux.HandleFunc("/magetest/magento-behat-extension.json", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/magetest/magento-behats-extension.json", func(w http.ResponseWriter, r *http.Request) {
 		if m := "GET"; m != r.Method {
 			t.Errorf("Request method = %v, expected %v", r.Method, m)
 		}
@@ -31,7 +32,7 @@ func TestPackageRepository_Find(t *testing.T) {
 
 	hc := getHttpClient(server)
 	packageRepo := PackageRepository{Client: hc}
-	pkg, err := packageRepo.Find("magetest/magento-behat-extension")
+	pkg, err := packageRepo.Find("magetest/magento-behats-extension")
 
 	if err != nil {
 		t.Errorf("Didn't expect an error but got '%s'", err)
@@ -57,33 +58,40 @@ func TestPackageRepository_Get(t *testing.T) {
 
 	hc := getHttpClient(server)
 	packageRepo := PackageRepository{Client: hc}
-	actual, err := packageRepo.Get("m/e", "2.*")
+	actual, err := packageRepo.Get("m/e")
 
 	if err != nil {
 		t.Errorf("Unexpected error %v", err)
 	}
 
-	exepected := map[string]Version{
-		"2.0.0": Version{
+	exepected := map[string]dependency.Dependency{
+		"2.0.0": dependency.Dependency{
 			Name:    "m/e",
 			Version: "2.0.0",
 		},
-		"2.0.1": Version{
+		"2.0.1": dependency.Dependency{
 			Name:    "m/e",
 			Version: "2.0.1",
 		},
-		"2.1.0": Version{
+		"2.1.0": dependency.Dependency{
 			Name:    "m/e",
 			Version: "2.1.0",
 		},
-		"2.1.1": Version{
+		"2.1.1": dependency.Dependency{
 			Name:    "m/e",
 			Version: "2.1.1",
 		},
+		"dev-master": dependency.Dependency{
+			Name:    "m/e",
+			Version: "dev-master",
+		},
 	}
 
-	if !reflect.DeepEqual(actual, exepected) {
-		t.Errorf("expected = %v, got = %v", exepected, actual)
+	for k, v := range exepected {
+
+		if actual[k].Version != v.Version {
+			t.Errorf("Expected %q got %q", v, actual[k])
+		}
 	}
 }
 
@@ -97,42 +105,11 @@ func TestPackageRepository_Get_Hits_Api_Once(t *testing.T) {
 
 	hc := getHttpClient(server)
 	packageRepo := PackageRepository{Client: hc}
-	packageRepo.Get("m/e", "~1.1")
-	packageRepo.Get("m/e", "~1.1")
+	packageRepo.Get("m/e")
+	packageRepo.Get("m/e")
 
 	if expected := 1; apiHitCount != expected {
 		t.Errorf("Api was expected to be hit %v times got hit %v", expected, apiHitCount)
 	}
 }
 
-func TestPackageRepository_DoubleFilter(t *testing.T) {
-
-	mux, server := getMuxAndServer()
-	mux.HandleFunc("/m/e.json", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, `{"package":{"name":"m\/e", "versions": {"dev-master": {"name":"m\/e", "version": "dev-master"}, "1.0.0": {"name":"m\/e", "version": "1.0.0"},"1.0.1": {"name":"m\/e", "version": "1.0.1"},"1.1.0": {"name":"m\/e", "version": "1.1.0"},"1.1.1": {"name":"m\/e", "version": "1.1.1"}}}}`)
-	})
-
-	hc := getHttpClient(server)
-	packageRepo := PackageRepository{Client: hc}
-	packageRepo.Get("m/e", "1.*")
-	actual, err := packageRepo.Get("m/e", "~1.1")
-
-	if err != nil {
-		t.Errorf("Unexpected error %v", err)
-	}
-
-	exepected := map[string]Version{
-		"1.1.0": Version{
-			Name:    "m/e",
-			Version: "1.1.0",
-		},
-		"1.1.1": Version{
-			Name:    "m/e",
-			Version: "1.1.1",
-		},
-	}
-
-	if !reflect.DeepEqual(actual, exepected) {
-		t.Errorf("expected = %v, got = %v", exepected, actual)
-	}
-}
