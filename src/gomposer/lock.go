@@ -1,5 +1,9 @@
 package gomposer
 
+import (
+	"sort"
+)
+
 type LockGenerator struct {
 	PackageRepo PackageRepository
 }
@@ -7,14 +11,21 @@ type LockGenerator struct {
 func (lg LockGenerator) Generate(dependencies map[string]string) (Lock) {
 
 	l := Lock{}
-	p := []Version{}
-	for k, v := range dependencies {
+	packages := []string{}
+	for k, _ := range dependencies {
+		packages = append(packages, k)
+	}
+
+	sort.Sort(sort.StringSlice(packages))
+
+	for _, k := range packages {
 		p, err := lg.PackageRepo.Find(k)
+		v := dependencies[k]
 		if err != nil{
 			// TODO remove
 			panic(err)
 		}
-		p = append(p, p.Versions[v])
+		l.Packages = append(l.Packages, p.Versions[v])
 	}
 
 	return l
