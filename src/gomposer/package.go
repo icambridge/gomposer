@@ -55,7 +55,7 @@ func (r *PackageRepository) Find(packageName string) (PackageInfo, error) {
 	return r.Packages[packageName], err
 }
 
-func (r *PackageRepository) Get(packageName string) (map[string]dependency.Dependency, error) {
+func (r PackageRepository) Get(packageName string) (map[string]dependency.Dependency, error) {
 
 
 	m := map[string]dependency.Dependency{}

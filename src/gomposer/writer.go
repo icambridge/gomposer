@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func WriteLock(lock *Lock) {
+func WriteLock(lock Lock) {
 
 	b, err := json.Marshal(lock)
 
@@ -14,7 +14,7 @@ func WriteLock(lock *Lock) {
 		fmt.Println("error:", err)
 	}
 
-	f, err := os.Create("composer.test.lock")
+	f, err := os.Create("composer.lock")
 
 	f.Write(b)
 }

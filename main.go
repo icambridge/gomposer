@@ -6,7 +6,6 @@ import (
 	"github.com/icambridge/go-dependency"
 	"gomposer"
 	"os"
-	"sort"
 )
 
 func main() {
@@ -38,18 +37,17 @@ func main() {
 
 				if err != nil {
 					fmt.Println(err)
+					return
 				}
 
-				names := []string{}
-				for k, _ := range required {
-					names = append(names, k)
-				}
-				sort.Sort(sort.StringSlice(names))
-
-				for _, v := range names {
-					fmt.Println(fmt.Sprintf("%s->%s", v, required[v]))
-				}
 				// TODO convert required into Lock file.
+
+				lockGenerator := gomposer.LockGenerator{
+					PackageRepo: pr,
+				}
+
+				lock := lockGenerator.Generate(required)
+				gomposer.Download(lock.Packages[0])
 			},
 		},
 	}
