@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"io"
 	"os"
+	"os/exec"
 )
 //
 //type Downloader struct {
@@ -25,7 +26,12 @@ func Download(v Version) {
 	defer resp.Body.Close()
 
 	_, err = io.Copy(out, resp.Body)
+
+	cmd := exec.Command("unzip", "output.zip", "-d", "vendors/"+v.Name)
+	err = cmd.Start()
 	if err != nil {
 		panic(err)
 	}
+
+	//os.Remove("output.zip")
 }

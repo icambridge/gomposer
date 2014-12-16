@@ -45,7 +45,7 @@ func main() {
 				lockGenerator := gomposer.LockGenerator{
 					PackageRepo: pr,
 				}
-
+				os.Mkdir("vendors", 0777)
 				lock := lockGenerator.Generate(required)
 				gomposer.Download(lock.Packages[0])
 			},
