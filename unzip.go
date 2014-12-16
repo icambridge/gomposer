@@ -21,12 +21,13 @@ func main() {
 	// printing some of their contents.
 	pkgName := "alexandresalome/PHP-Selenium"
 	dirs := strings.Split(pkgName, "/")
+
 	dirName := "vendors"
 	for _, k := range dirs {
 		dirName = dirName + "/" + k
-		os.Mkdir(dirName, 0777)
+		os.Mkdir(dirName, 0744)
 	}
-	//os.Mkdir("vendors/"+pkgName, 0777)
+
 	for _, f := range r.File {
 
 		fileName := filepath.Base(f.Name)
@@ -45,7 +46,7 @@ func main() {
 
 		for _, k := range parts {
 			currentDir = currentDir + "/" + k
-			os.Mkdir(currentDir, 0777)
+			os.Mkdir(currentDir, 0744)
 		}
 		partCount := len(parts)
 
