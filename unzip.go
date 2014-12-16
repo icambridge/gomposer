@@ -2,7 +2,6 @@ package main
 
 import (
 	"archive/zip"
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -11,12 +10,6 @@ import (
 )
 
 func main() {
-	r, err := zip.OpenReader("output.zip")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer r.Close()
-
 	// Iterate through the files in the archive,
 	// printing some of their contents.
 	pkgName := "alexandresalome/PHP-Selenium"
@@ -28,6 +21,16 @@ func main() {
 		os.Mkdir(dirName, 0744)
 	}
 
+	Extract(dirName, "output.zip")
+}
+
+func Extract(dirName, zipFile string) {
+
+	r, err := zip.OpenReader(zipFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer r.Close()
 	for _, f := range r.File {
 
 		fileName := filepath.Base(f.Name)
@@ -54,9 +57,8 @@ func main() {
 			continue
 		}
 
-		of, err := os.Create(dirName + "/" + fileName)
+		of, err := os.Create(currentDir + "/" + fileName)
 		if err != nil {
-			fmt.Println(dirName + "/" + fileName)
 			log.Fatal(err)
 		}
 		_, err = io.Copy(of, rc)
@@ -68,5 +70,4 @@ func main() {
 		of.Close()
 	}
 }
-
 
