@@ -47,7 +47,9 @@ func main() {
 				}
 				os.Mkdir("vendors", 0777)
 				lock := lockGenerator.Generate(required)
-				gomposer.Download(lock.Packages[0])
+				for _, p := range lock.Packages {
+					gomposer.Download(p)
+				}
 			},
 		},
 	}
