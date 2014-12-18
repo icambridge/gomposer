@@ -18,10 +18,12 @@ func main() {
 			Name:  "update",
 			Usage: "Updates",
 			Action: func(c *cli.Context) {
-
+				fmt.Println("Starting update process")
 				r := gomposer.PackageReader{}
 				actual, _ := r.Read("composer.json")
 
+
+				fmt.Pritnln("Solving dependencies")
 				d := gomposer.ToDependency(actual)
 
 				hc, _ := gomposer.NewHttpClient("https://packagist.org/packages/")
@@ -41,7 +43,7 @@ func main() {
 				}
 
 				// TODO convert required into Lock file.
-
+				fmt.Println("Downloading dependencies")
 				lockGenerator := gomposer.LockGenerator{
 					PackageRepo: pr,
 				}
