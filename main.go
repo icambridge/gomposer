@@ -50,6 +50,7 @@ func main() {
 				for _, p := range lock.Packages {
 					gomposer.Download(p)
 				}
+				gomposer.WriteLock(lock)
 			},
 		},
 	}

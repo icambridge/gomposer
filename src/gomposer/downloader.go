@@ -1,19 +1,17 @@
 package gomposer
 
 import (
-	"net/http"
-	"io"
-	"os"
 	"archive/zip"
-	"log"
-	"strings"
+	"bytes"
 	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
 	"path/filepath"
+	"strings"
 )
-//
-//type Downloader struct {
-//
-//}
+
 
 func Download(v Version) {
 
@@ -26,14 +24,17 @@ func Download(v Version) {
 	}
 	defer out.Close()
 
-	resp, err := http.Get(v.Dist.Url)
+	buf := new(bytes.Buffer)
+	req, err := http.NewRequest("GET", v.Dist.Url, buf)
+
+	client := http.DefaultClient
+	resp, err := client.Do(req)
+
 	if err != nil {
 		panic(err)
 	}
 	defer resp.Body.Close()
-
 	_, err = io.Copy(out, resp.Body)
-
 
 	dirs := strings.Split(v.Name, "/")
 
@@ -45,9 +46,8 @@ func Download(v Version) {
 
 	Extract(dirName, filename)
 
-	//os.Remove(filename)
+	os.Remove(filename)
 }
-
 
 func Extract(dirName, zipFile string) {
 

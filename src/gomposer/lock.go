@@ -8,7 +8,7 @@ type LockGenerator struct {
 	PackageRepo PackageRepository
 }
 
-func (lg LockGenerator) Generate(dependencies map[string]string) (Lock) {
+func (lg LockGenerator) Generate(dependencies map[string]string) Lock {
 
 	l := Lock{}
 	packages := []string{}
@@ -21,7 +21,7 @@ func (lg LockGenerator) Generate(dependencies map[string]string) (Lock) {
 	for _, k := range packages {
 		p, err := lg.PackageRepo.Find(k)
 		v := dependencies[k]
-		if err != nil{
+		if err != nil {
 			// TODO remove
 			panic(err)
 		}

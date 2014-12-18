@@ -10,9 +10,9 @@ func TestLockGeneratesLockFile(t *testing.T) {
 
 	mux, server := getMuxAndServer()
 	mux.HandleFunc("/m/e.json", func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprint(w, `{"package":{"name":"m\/e", "versions": {"dev-master": {"name":"m\/e", "version": "dev-master"}, "1.0.0": {"name":"m\/e", "version": "1.0.0"},"1.0.1": {"name":"m\/e", "version": "1.0.1"},"1.1.0": {"name":"m\/e", "version": "1.1.0"},"1.1.1": {"name":"m\/e", "version": "1.1.1"}}}}`)
+		fmt.Fprint(w, `{"package":{"name":"m\/e", "versions": {"dev-master": {"name":"m\/e", "version": "dev-master"}, "1.0.0": {"name":"m\/e", "version": "1.0.0"},"1.0.1": {"name":"m\/e", "version": "1.0.1"},"1.1.0": {"name":"m\/e", "version": "1.1.0"},"1.1.1": {"name":"m\/e", "version": "1.1.1"}}}}`)
 
-		})
+	})
 
 	hc := getHttpClient(server)
 	packageRepo := PackageRepository{Client: hc}
@@ -37,19 +37,18 @@ func TestLockGeneratesLockFile(t *testing.T) {
 	}
 }
 
-
 func TestLockGeneratesLockFile_Sorted(t *testing.T) {
 
 	mux, server := getMuxAndServer()
 	mux.HandleFunc("/m/e.json", func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprint(w, `{"package":{"name":"m\/e", "versions": {"dev-master": {"name":"m\/e", "version": "dev-master"}, "1.0.0": {"name":"m\/e", "version": "1.0.0"},"1.0.1": {"name":"m\/e", "version": "1.0.1"},"1.1.0": {"name":"m\/e", "version": "1.1.0"},"1.1.1": {"name":"m\/e", "version": "1.1.1"}}}}`)
+		fmt.Fprint(w, `{"package":{"name":"m\/e", "versions": {"dev-master": {"name":"m\/e", "version": "dev-master"}, "1.0.0": {"name":"m\/e", "version": "1.0.0"},"1.0.1": {"name":"m\/e", "version": "1.0.1"},"1.1.0": {"name":"m\/e", "version": "1.1.0"},"1.1.1": {"name":"m\/e", "version": "1.1.1"}}}}`)
 
-		})
+	})
 
 	mux.HandleFunc("/z/e.json", func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprint(w, `{"package":{"name":"z\/e", "versions": {"dev-master": {"name":"z\/e", "version": "dev-master"}, "1.0.0": {"name":"m\/e", "version": "1.0.0"},"1.0.1": {"name":"m\/e", "version": "1.0.1"},"1.1.0": {"name":"m\/e", "version": "1.1.0"},"1.1.1": {"name":"m\/e", "version": "1.1.1"}}}}`)
+		fmt.Fprint(w, `{"package":{"name":"z\/e", "versions": {"dev-master": {"name":"z\/e", "version": "dev-master"}, "1.0.0": {"name":"m\/e", "version": "1.0.0"},"1.0.1": {"name":"m\/e", "version": "1.0.1"},"1.1.0": {"name":"m\/e", "version": "1.1.0"},"1.1.1": {"name":"m\/e", "version": "1.1.1"}}}}`)
 
-		})
+	})
 	hc := getHttpClient(server)
 	packageRepo := PackageRepository{Client: hc}
 

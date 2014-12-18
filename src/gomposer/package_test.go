@@ -112,4 +112,3 @@ func TestPackageRepository_Get_Hits_Api_Once(t *testing.T) {
 		t.Errorf("Api was expected to be hit %v times got hit %v", expected, apiHitCount)
 	}
 }
-
