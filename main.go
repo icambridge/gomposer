@@ -15,13 +15,13 @@ func main() {
 	app.Usage = "Composer is go bro"
 	app.Commands = []cli.Command{
 		{
-			Name:  "update",
-			Usage: "Updates",
+			Name:   "update",
+			Usage:  "Updates",
 			Action: Update,
 		},
 		{
-			Name:  "install",
-			Usage: "Installs",
+			Name:   "install",
+			Usage:  "Installs",
 			Action: Install,
 		},
 	}

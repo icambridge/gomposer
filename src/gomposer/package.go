@@ -2,10 +2,10 @@ package gomposer
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/icambridge/go-dependency"
 	"os"
 	"strings"
+	"time"
 )
 
 // TODO reanme
@@ -27,12 +27,10 @@ func (r *PackageRepository) Find(packageName string) (PackageInfo, error) {
 		return packageData, nil
 	}
 
-	prepFilename := strings.NewReplacer("/", "$").Replace(packageName)
-
-	filename := fmt.Sprintf("/Users/icambridge/.composer/cache/repo/https---packagist.org/provider-%s.json", prepFilename)
-
+	filename := GetCacheFilename(packageName)
+	then := time.Now().AddDate(0, -1, 0)
 	output := &PackageDetail{}
-	if _, found := os.Stat(filename); os.IsNotExist(found) {
+	if fi, found := os.Stat(filename); os.IsNotExist(found) || fi.ModTime().Before(then) {
 
 		err := r.Client.Request("GET", "/"+packageName+".json", output)
 
@@ -40,14 +38,14 @@ func (r *PackageRepository) Find(packageName string) (PackageInfo, error) {
 
 		return output.PackageData, err
 	}
-
+	// todo remove &
+	// TODO move to cache reader
 	cached := &PackageCache{}
 	buf, err := os.Open(filename)
 
 	if err != nil {
 		return output.PackageData, err
 	}
-
 	err = json.NewDecoder(buf).Decode(cached)
 	output.PackageData = PackageInfo{Versions: cached.PackageData[packageName]}
 
@@ -95,7 +93,6 @@ func ToDependency(pi *Version) dependency.Dependency {
 func IsPackagist(name string) bool {
 	return strings.Contains(name, "/")
 }
-
 
 type PackageDetail struct {
 	PackageData PackageInfo `json:"package"`

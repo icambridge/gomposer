@@ -3,8 +3,8 @@ package gomposer
 import (
 	"fmt"
 	"net/http"
-	"testing"
 	"reflect"
+	"testing"
 )
 
 func TestLockGeneratesLockFile(t *testing.T) {
@@ -82,7 +82,7 @@ func Test_DiffLock_Returns_Added_Packages(t *testing.T) {
 	expected := Version{Name: "behat/behat", Version: "1.1.2"}
 	new := Lock{
 		Packages: []Version{
-			 expected,
+			expected,
 		},
 	}
 
@@ -99,7 +99,6 @@ func Test_DiffLock_Returns_Added_Packages(t *testing.T) {
 		return
 	}
 
-
 	if !reflect.DeepEqual(output["added"][0], expected) {
 		t.Errorf("Expected %v, got %v", expected, output["added"][0])
 		return
@@ -109,8 +108,7 @@ func Test_DiffLock_Returns_Added_Packages(t *testing.T) {
 func Test_DiffLock_Returns_Removed_Packages(t *testing.T) {
 	expected := Version{Name: "behat/behat", Version: "1.1.2"}
 	new := Lock{
-		Packages: []Version{
-		},
+		Packages: []Version{},
 	}
 
 	old := Lock{
@@ -125,7 +123,6 @@ func Test_DiffLock_Returns_Removed_Packages(t *testing.T) {
 		t.Errorf("Expected only %v item got %v", expectedCount, actualCount)
 		return
 	}
-
 
 	if !reflect.DeepEqual(output["removed"][0], expected) {
 		t.Errorf("Expected %v, got %v", expected, output["removed"][0])
@@ -152,7 +149,6 @@ func Test_DiffLock_Returns_Removed_Packages_When_Replaced(t *testing.T) {
 		t.Errorf("Expected only %v item got %v", expectedCount, actualCount)
 		return
 	}
-
 
 	if !reflect.DeepEqual(output["removed"][0], expected) {
 		t.Errorf("Expected %v, got %v", expected, output["removed"][0])

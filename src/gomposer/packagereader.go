@@ -17,7 +17,6 @@ func (pr PackageReader) Read(filename string) (Version, error) {
 
 	buf, err := os.Open(filename)
 
-
 	output := Version{}
 	if err != nil {
 		return output, err
@@ -36,7 +35,6 @@ func ReadLock(filename string) (*Lock, error) {
 	if err != nil {
 		return output, err
 	}
-
 
 	json.NewDecoder(buf).Decode(output)
 

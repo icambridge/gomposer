@@ -12,7 +12,6 @@ import (
 	"strings"
 )
 
-
 func Download(v Version) {
 
 	fmt.Println(fmt.Sprintf("Downloading %s", v.Name))

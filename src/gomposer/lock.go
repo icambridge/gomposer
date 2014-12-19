@@ -38,7 +38,7 @@ func (lg LockGenerator) Generate(dependencies map[string]string) Lock {
 
 func DiffLock(new, old Lock) map[string][]Version {
 	added := []Version{}
-	removed:= []Version{}
+	removed := []Version{}
 
 	oldPackages := map[string]Version{}
 
@@ -48,8 +48,6 @@ func DiffLock(new, old Lock) map[string][]Version {
 
 	for _, nPkgInfo := range new.Packages {
 		oPkgInfo, found := oldPackages[nPkgInfo.Name]
-		//
-
 
 		if !found || nPkgInfo.Version != oPkgInfo.Version {
 			if found {
