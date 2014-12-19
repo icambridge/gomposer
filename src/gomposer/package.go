@@ -96,10 +96,6 @@ func IsPackagist(name string) bool {
 	return strings.Contains(name, "/")
 }
 
-type Lock struct {
-	Packages    []Version `json:"packages"`
-	PackagesDev []Version `json:"packages-dev"`
-}
 
 type PackageDetail struct {
 	PackageData PackageInfo `json:"package"`

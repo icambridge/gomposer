@@ -13,17 +13,17 @@ type Reader interface {
 type PackageReader struct {
 }
 
-func (pr PackageReader) Read(filename string) (*Version, error) {
+func (pr PackageReader) Read(filename string) (Version, error) {
 
 	buf, err := os.Open(filename)
 
+
+	output := Version{}
 	if err != nil {
-		return nil, err
+		return output, err
 	}
 
-	output := &Version{}
-
-	json.NewDecoder(buf).Decode(output)
+	json.NewDecoder(buf).Decode(&output)
 
 	return output, nil
 }
