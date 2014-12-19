@@ -2,6 +2,9 @@ package gomposer
 
 import (
 	"sort"
+	"encoding/json"
+	"fmt"
+	"os"
 )
 
 type Lock struct {
@@ -66,4 +69,17 @@ func DiffLock(new, old Lock) map[string][]Version {
 	}
 
 	return map[string][]Version{"added": added, "removed": removed}
+}
+
+func WriteLock(lock Lock) {
+
+	b, err := json.Marshal(lock)
+
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+
+	f, err := os.Create("composer.lock")
+
+	f.Write(b)
 }

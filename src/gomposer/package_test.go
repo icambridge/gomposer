@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"os"
 )
 
 func getMuxAndServer() (*http.ServeMux, *httptest.Server) {
@@ -19,7 +20,9 @@ func getMuxAndServer() (*http.ServeMux, *httptest.Server) {
 }
 
 func TestPackageRepository_Find(t *testing.T) {
-
+	// todo setUp
+	cacheFileName := GetCacheFilename("magetest/magento-behats-extension")
+	os.Remove(cacheFileName)
 	mux, server := getMuxAndServer()
 	apiHit := false
 	mux.HandleFunc("/magetest/magento-behats-extension.json", func(w http.ResponseWriter, r *http.Request) {
@@ -45,12 +48,13 @@ func TestPackageRepository_Find(t *testing.T) {
 	if pkg.Name != expectedName {
 		t.Errorf("Expected '%s' but got '%s'", expectedName, pkg.Name)
 	}
-
 	server.Close()
 }
 
 func TestPackageRepository_Get(t *testing.T) {
 
+	cacheFileName := GetCacheFilename("m/e")
+	os.Remove(cacheFileName)
 	mux, server := getMuxAndServer()
 	mux.HandleFunc("/m/e.json", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, `{"package":{"name":"m\/e", "versions": {"dev-master": {"name":"m\/e", "version": "dev-master"}, "2.0.0": {"name":"m\/e", "version": "2.0.0"},"2.0.1": {"name":"m\/e", "version": "2.0.1"},"2.1.0": {"name":"m\/e", "version": "2.1.0"},"2.1.1": {"name":"m\/e", "version": "2.1.1"}}}}`)
@@ -96,6 +100,8 @@ func TestPackageRepository_Get(t *testing.T) {
 }
 
 func TestPackageRepository_Get_Hits_Api_Once(t *testing.T) {
+	cacheFileName := GetCacheFilename("m/e")
+	os.Remove(cacheFileName)
 	apiHitCount := 0
 	mux, server := getMuxAndServer()
 	mux.HandleFunc("/m/e.json", func(w http.ResponseWriter, r *http.Request) {

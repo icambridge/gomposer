@@ -32,12 +32,13 @@ func (r *PackageRepository) Find(packageName string) (PackageInfo, error) {
 	if fi, found := os.Stat(filename); os.IsNotExist(found) || fi.ModTime().Before(then) {
 
 		err := r.Client.Request("GET", "/"+packageName+".json", output)
-
+		// TODO remove cache in tests
+		WriteCache(packageName, output.PackageData)
 		r.Packages[packageName] = output.PackageData
 
 		return output.PackageData, err
 	}
-	
+
 	cache, err := ReadCache(filename, packageName)
 	output.PackageData = cache
 	r.Packages[packageName] = output.PackageData
