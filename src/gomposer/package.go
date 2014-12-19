@@ -56,7 +56,7 @@ func (r PackageRepository) Get(packageName string) (map[string]dependency.Depend
 
 	for k, v := range packageInfo.Versions {
 
-		m[k] = ToDependency(&v)
+		m[k] = ToDependency(v)
 
 	}
 
@@ -64,7 +64,7 @@ func (r PackageRepository) Get(packageName string) (map[string]dependency.Depend
 
 }
 
-func ToDependency(pi *Version) dependency.Dependency {
+func ToDependency(pi Version) dependency.Dependency {
 	requires := map[string]string{}
 
 	for reqPackageName, reqPackageVersion := range pi.Require {
