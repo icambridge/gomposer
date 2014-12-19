@@ -52,6 +52,9 @@ func DiffLock(new, old Lock) map[string][]Version {
 
 
 		if !found || nPkgInfo.Version != oPkgInfo.Version {
+			if found {
+				removed = append(removed, oPkgInfo)
+			}
 			added = append(added, nPkgInfo)
 		}
 
