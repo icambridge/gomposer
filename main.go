@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/codegangsta/cli"
 	"github.com/icambridge/go-dependency"
-	"gomposer"
+	"github.com/icambridge/gomposer/gomposer"
 	"os"
 )
 
