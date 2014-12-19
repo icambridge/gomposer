@@ -81,5 +81,8 @@ func WriteLock(lock Lock) {
 
 	f, err := os.Create("composer.lock")
 
+	if err != nil {
+		fmt.Println("error:", err)
+	}
 	f.Write(b)
 }

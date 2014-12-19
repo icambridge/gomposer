@@ -1,6 +1,4 @@
 language: go
 go:
  - 1.3
-
-script:
- - go test gomposer
+ - 1.4

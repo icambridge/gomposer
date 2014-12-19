@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os/user"
 	"strings"
+	"path/filepath"
 )
 
 func ReadCache(filename, packageName string) (PackageInfo, error) {
@@ -23,20 +24,27 @@ func ReadCache(filename, packageName string) (PackageInfo, error) {
 }
 
 func WriteCache(packageName string, packageInfo PackageInfo) {
+	// No error checking because cache writing should be a silent failure.
 	cache := PackageCache{
 		PackageData: map[string]map[string]Version{
 			packageName: packageInfo.Versions,
 		},
 	}
 	filename := GetCacheFilename(packageName)
-	b, err := json.Marshal(cache)
 
-	if err != nil {
-		fmt.Println("error:", err)
+	parts := strings.Split(filepath.Dir(filename), "/")
+	currentDir := ""
+	for _, k := range parts {
+		currentDir = currentDir + "/" + k
+		if _, found := os.Stat(currentDir); os.IsNotExist(found) {
+			os.Mkdir(currentDir, 0744)
+		}
 	}
 
-	f, err := os.Create(filename)
+	b, _ := json.Marshal(cache)
 
+
+	f, _ := os.Create(filename)
 	f.Write(b)
 }
 
@@ -46,6 +54,7 @@ func GetCacheFilename(packageName string) string {
 		return ""
 	}
 	prepFilename := strings.NewReplacer("/", "$").Replace(packageName)
+
 	directory := ".composer/cache/repo/https---packagist.org"
 	filename := fmt.Sprintf("%s/%s/provider-%s.json", usr.HomeDir, directory, prepFilename)
 

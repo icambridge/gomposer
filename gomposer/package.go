@@ -10,39 +10,27 @@ import (
 // TODO reanme
 type PackageRepository struct {
 	Client   *HttpClient
-	Packages map[string]PackageInfo
 }
 
 func (r *PackageRepository) Find(packageName string) (PackageInfo, error) {
 
 	packageName = strings.ToLower(packageName)
 
-	if len(r.Packages) == 0 {
-		r.Packages = make(map[string]PackageInfo)
-	}
-	packageData, ok := r.Packages[packageName]
-
-	if ok {
-		return packageData, nil
-	}
-
 	filename := GetCacheFilename(packageName)
 	then := time.Now().AddDate(0, -1, 0)
-	output := &PackageDetail{}
+	output := PackageDetail{}
 	if fi, found := os.Stat(filename); os.IsNotExist(found) || fi.ModTime().Before(then) {
 
-		err := r.Client.Request("GET", "/"+packageName+".json", output)
+		err := r.Client.Request("GET", "/"+packageName+".json", &output)
 		// TODO remove cache in tests
 		WriteCache(packageName, output.PackageData)
-		r.Packages[packageName] = output.PackageData
 
 		return output.PackageData, err
 	}
 
 	cache, err := ReadCache(filename, packageName)
 	output.PackageData = cache
-	r.Packages[packageName] = output.PackageData
-	return r.Packages[packageName], err
+	return output.PackageData, err
 }
 
 func (r PackageRepository) Get(packageName string) (map[string]dependency.Dependency, error) {
@@ -59,7 +47,7 @@ func (r PackageRepository) Get(packageName string) (map[string]dependency.Depend
 		m[k] = ToDependency(v)
 
 	}
-
+	r = r
 	return m, nil
 
 }
