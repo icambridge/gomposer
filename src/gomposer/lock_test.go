@@ -132,3 +132,30 @@ func Test_DiffLock_Returns_Removed_Packages(t *testing.T) {
 		return
 	}
 }
+func Test_DiffLock_Returns_Removed_Packages_When_Replaced(t *testing.T) {
+	expected := Version{Name: "behat/behat", Version: "1.1.2"}
+	new := Lock{
+		Packages: []Version{
+			Version{Name: "behat/behat", Version: "1.1.1"},
+		},
+	}
+
+	old := Lock{
+		Packages: []Version{
+			expected,
+		},
+	}
+
+	output := DiffLock(new, old)
+
+	if actualCount, expectedCount := len(output["removed"]), 1; actualCount != expectedCount {
+		t.Errorf("Expected only %v item got %v", expectedCount, actualCount)
+		return
+	}
+
+
+	if !reflect.DeepEqual(output["removed"][0], expected) {
+		t.Errorf("Expected %v, got %v", expected, output["removed"][0])
+		return
+	}
+}
