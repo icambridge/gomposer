@@ -37,8 +37,7 @@ func (r *PackageRepository) Find(packageName string) (PackageInfo, error) {
 
 		return output.PackageData, err
 	}
-	// todo remove &
-	// TODO move to cache reader
+	
 	cache, err := ReadCache(filename, packageName)
 	output.PackageData = cache
 	r.Packages[packageName] = output.PackageData
