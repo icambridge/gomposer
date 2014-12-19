@@ -1,7 +1,6 @@
 package gomposer
 
 import (
-	"encoding/json"
 	"github.com/icambridge/go-dependency"
 	"os"
 	"strings"
@@ -40,15 +39,8 @@ func (r *PackageRepository) Find(packageName string) (PackageInfo, error) {
 	}
 	// todo remove &
 	// TODO move to cache reader
-	cached := &PackageCache{}
-	buf, err := os.Open(filename)
-
-	if err != nil {
-		return output.PackageData, err
-	}
-	err = json.NewDecoder(buf).Decode(cached)
-	output.PackageData = PackageInfo{Versions: cached.PackageData[packageName]}
-
+	cache, err := ReadCache(filename, packageName)
+	output.PackageData = cache
 	r.Packages[packageName] = output.PackageData
 	return r.Packages[packageName], err
 }
