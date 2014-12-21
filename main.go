@@ -82,7 +82,10 @@ func Update(c *cli.Context) {
 
 	diff := gomposer.DiffLock(newLock, oldLock)
 
-
+	if len(diff["added"]) == 0 {
+		fmt.Println("Nothing to do")
+		return
+	}
 
 	Download(diff["added"])
 	gomposer.WriteLock(newLock)
