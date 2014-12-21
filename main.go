@@ -72,23 +72,23 @@ func Update(c *cli.Context) {
 	lockGenerator := gomposer.LockGenerator{
 		PackageRepo: pr,
 	}
-	new := lockGenerator.Generate(required)
+	newLock := lockGenerator.Generate(required)
+	lockFile := "composer.lock"
 
-
-	old, err := gomposer.ReadLock(lockFile)
+	oldLock, err := gomposer.ReadLock(lockFile)
 	if err != nil {
 		panic(err)
 	}
 
-	diff := gomposer.DiffLock(new, old)
+	diff := gomposer.DiffLock(newLock, oldLock)
 
 
 
 	Download(diff["added"])
-	gomposer.WriteLock(new)
+	gomposer.WriteLock(newLock)
 }
 
-func Download(packages []Version) {
+func Download(packages []gomposer.Version) {
 
 	os.Mkdir("vendors", 0777)
 	fmt.Println("Downloading dependencies")
