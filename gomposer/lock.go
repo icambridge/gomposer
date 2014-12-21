@@ -86,3 +86,23 @@ func WriteLock(lock Lock) {
 	}
 	f.Write(b)
 }
+
+func ReadLock(filename string) (Lock, error) {
+
+	output := Lock{}
+	buf, err := os.Open(filename)
+
+
+	if err != nil {
+		if os.IsNotExist(err) {
+			err = nil
+			output.Packages = []Version{}
+			output.PackagesDev = []Version{}
+		}
+		return output, err
+	}
+
+	json.NewDecoder(buf).Decode(&output)
+
+	return output, nil
+}

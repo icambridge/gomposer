@@ -42,7 +42,7 @@ func Install(c *cli.Context) {
 	if err != nil {
 		panic(err)
 	}
-	Download(lock)
+	Download(lock.Packages)
 }
 
 func Update(c *cli.Context) {
@@ -72,16 +72,27 @@ func Update(c *cli.Context) {
 	lockGenerator := gomposer.LockGenerator{
 		PackageRepo: pr,
 	}
-	lock := lockGenerator.Generate(required)
-	Download(&lock)
-	gomposer.WriteLock(lock)
+	new := lockGenerator.Generate(required)
+
+
+	old, err := gomposer.ReadLock(lockFile)
+	if err != nil {
+		panic(err)
+	}
+
+	diff := gomposer.DiffLock(new, old)
+
+
+
+	Download(diff["added"])
+	gomposer.WriteLock(new)
 }
 
-func Download(lock *gomposer.Lock) {
+func Download(packages []Version) {
 
 	os.Mkdir("vendors", 0777)
 	fmt.Println("Downloading dependencies")
-	for _, p := range lock.Packages {
+	for _, p := range packages {
 		gomposer.Download(p)
 	}
 }
