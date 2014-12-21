@@ -16,7 +16,7 @@ func Download(v Version) {
 
 	fmt.Println(fmt.Sprintf("Downloading %s", v.Name))
 	s := GenerateRandomString(10)
-	filename := s + "." + v.Dist.Type
+	filename := os.TempDir() + "/" + s + "." + v.Dist.Type
 	out, err := os.Create(filename)
 	if err != nil {
 		panic(err)
@@ -93,4 +93,8 @@ func Extract(dirName, zipFile string) {
 		rc.Close()
 		of.Close()
 	}
+}
+
+func Remove(vendorDir string, v Version) {
+	os.RemoveAll(vendorDir+"/"+v.Name)
 }
