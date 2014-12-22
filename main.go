@@ -82,6 +82,10 @@ func Update(c *cli.Context) {
 
 	diff := gomposer.DiffLock(newLock, oldLock)
 
+	if len(diff["removed"]) != 0 {
+		Remove(diff["removed"])
+	}
+
 	if len(diff["added"]) == 0 {
 		fmt.Println("Nothing to do")
 		return
@@ -89,6 +93,15 @@ func Update(c *cli.Context) {
 
 	Download(diff["added"])
 	gomposer.WriteLock(newLock)
+}
+
+func Remove(packages []gomposer.Version) {
+	fmt.Println("Removing outdated dependencies")
+	for _, p := range packages {
+
+		fmt.Println(fmt.Sprintf("Removing %s", p.Name))
+		gomposer.Remove(p)
+	}
 }
 
 func Download(packages []gomposer.Version) {
