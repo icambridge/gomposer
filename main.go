@@ -87,7 +87,7 @@ func Update(c *cli.Context) {
 	}
 
 	if len(diff["added"]) == 0 {
-		fmt.Println("Nothing to do")
+		fmt.Println("Nothing to update")
 		return
 	}
 
