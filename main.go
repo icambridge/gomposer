@@ -100,7 +100,7 @@ func Remove(packages []gomposer.Version) {
 	for _, p := range packages {
 
 		fmt.Println(fmt.Sprintf("Removing %s", p.Name))
-		gomposer.Remove(p)
+		gomposer.Remove("vendors", p)
 	}
 }
 
