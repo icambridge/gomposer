@@ -85,13 +85,22 @@ func Update(c *cli.Context) {
 	if len(diff["removed"]) != 0 {
 		Remove(diff["removed"])
 	}
+	_, found := os.Stat("vendors");
 
-	if len(diff["added"]) == 0 {
+	var packages []gomposer.Version
+	
+	if os.IsNotExist(found) {
+		packages = newLock.Packages
+	} else {
+		packages = diff["added"]
+	}
+
+	if len(packages) == 0 {
 		fmt.Println("Nothing to update")
 		return
 	}
 
-	Download(diff["added"])
+	Download(packages)
 	gomposer.WriteLock(newLock)
 }
 
