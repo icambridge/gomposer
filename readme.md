@@ -1,12 +1,8 @@
 Gomposer
 ========
 
-An attempt at building composer client in golang. WIP
+An attempt at building composer client in golang.
 
-# things to do
+# Notes
 
-[x] Get package data
-[ ] Resolve dependencies
-[ ] Read composer.json
-[ ] Write composer.lock
-[ ] Download package
+Currently doesn't create the autoload, so you need to have composer to write your autoloader.

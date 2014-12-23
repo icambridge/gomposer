@@ -41,4 +41,5 @@ func Test_PackageReader_Read(t *testing.T) {
 	if !reflect.DeepEqual(actual, expected) {
 		t.Errorf("Response actual = %v, expected %v", actual, expected)
 	}
+	os.Remove("composer.json")
 }
