@@ -9,7 +9,7 @@ func Test_Remove_Deletes_Folder(t *testing.T) {
 	vendorDir := os.TempDir()  + "/vendors"
 	dirName := vendorDir+"/symfony/symfony"
 	os.MkdirAll(dirName, 0744)
-	v := Version{
+	v := ComposerPackage{
 		Name: "symfony/symfony",
 	}
 	Remove(vendorDir, v)
@@ -23,7 +23,7 @@ func Test_Remove_Deletes_Parent_Folder(t *testing.T) {
 	vendorDir := os.TempDir()  + "/vendors"
 	dirName := vendorDir+"/symfony"
 	os.MkdirAll(dirName + "/symfony", 0744)
-	v := Version{
+	v := ComposerPackage{
 		Name: "symfony/symfony",
 	}
 	Remove(vendorDir, v)
@@ -44,7 +44,7 @@ func Test_Remove_Keeps_Parent_Folder_When_Not_Empty(t *testing.T) {
 	}
 
 	fp.Write([]byte("hello world"))
-	v := Version{
+	v := ComposerPackage{
 		Name: "symfony/symfony",
 	}
 	Remove(vendorDir, v)

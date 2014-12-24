@@ -68,11 +68,15 @@ func Update(c *cli.Context) {
 		return
 	}
 
-	// TODO convert required into Lock file.
 	lockGenerator := gomposer.LockGenerator{
 		PackageRepo: pr,
 	}
-	newLock := lockGenerator.Generate(required)
+	newLock, err := lockGenerator.Generate(required)
+
+	if err != nil {
+		panic(err)
+	}
+
 	lockFile := "composer.lock"
 
 	oldLock, err := gomposer.ReadLock(lockFile)
@@ -87,8 +91,8 @@ func Update(c *cli.Context) {
 	}
 	_, found := os.Stat("vendors");
 
-	var packages []gomposer.Version
-	
+	var packages []gomposer.ComposerPackage
+
 	if os.IsNotExist(found) {
 		packages = newLock.Packages
 	} else {
@@ -104,7 +108,7 @@ func Update(c *cli.Context) {
 	gomposer.WriteLock(newLock)
 }
 
-func Remove(packages []gomposer.Version) {
+func Remove(packages []gomposer.ComposerPackage) {
 	fmt.Println("Removing outdated dependencies")
 	for _, p := range packages {
 
@@ -113,7 +117,7 @@ func Remove(packages []gomposer.Version) {
 	}
 }
 
-func Download(packages []gomposer.Version) {
+func Download(packages []gomposer.ComposerPackage) {
 
 	os.Mkdir("vendors", 0777)
 	fmt.Println("Downloading dependencies")

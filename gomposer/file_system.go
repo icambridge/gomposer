@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-func Download(v Version) {
+func Download(v ComposerPackage) {
 
 	fmt.Println(fmt.Sprintf("Downloading %s", v.Name))
 	s := GenerateRandomString(10)
@@ -95,7 +95,7 @@ func Extract(dirName, zipFile string) {
 	}
 }
 
-func Remove(vendorDir string, v Version) {
+func Remove(vendorDir string, v ComposerPackage) {
 	os.RemoveAll(vendorDir+"/"+v.Name)
 
 	parts := strings.Split(v.Name, "/")

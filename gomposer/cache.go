@@ -26,7 +26,7 @@ func ReadCache(filename, packageName string) (PackageInfo, error) {
 func WriteCache(packageName string, packageInfo PackageInfo) {
 	// No error checking because cache writing should be a silent failure.
 	cache := PackageCache{
-		PackageData: map[string]map[string]Version{
+		PackageData: map[string]map[string]ComposerPackage{
 			packageName: packageInfo.Versions,
 		},
 	}

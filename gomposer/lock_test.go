@@ -25,7 +25,12 @@ func TestLockGeneratesLockFile(t *testing.T) {
 	dependencies := map[string]string{
 		`m/e`: "dev-master",
 	}
-	lock := lockGenerator.Generate(dependencies)
+	lock, err := lockGenerator.Generate(dependencies)
+
+	if err != nil {
+		t.Errorf("%q", err)
+		return
+	}
 
 	if len(lock.Packages) == 0 {
 		t.Errorf("Expected packages in lock file")
@@ -61,7 +66,12 @@ func TestLockGeneratesLockFile_Sorted(t *testing.T) {
 		`m/e`: "dev-master",
 		`z/e`: "dev-master",
 	}
-	lock := lockGenerator.Generate(dependencies)
+	lock, err := lockGenerator.Generate(dependencies)
+
+	if err != nil {
+		t.Errorf("%q", err)
+		return
+	}
 
 	if len(lock.Packages) == 0 {
 		t.Errorf("Expected packages in lock file")
@@ -79,16 +89,16 @@ func TestLockGeneratesLockFile_Sorted(t *testing.T) {
 }
 
 func Test_DiffLock_Returns_Added_Packages(t *testing.T) {
-	expected := Version{Name: "behat/behat", Version: "1.1.2"}
+	expected := ComposerPackage{Name: "behat/behat", Version: "1.1.2"}
 	new := Lock{
-		Packages: []Version{
+		Packages: []ComposerPackage{
 			expected,
 		},
 	}
 
 	old := Lock{
-		Packages: []Version{
-			Version{Name: "behat/behat", Version: "1.1.1"},
+		Packages: []ComposerPackage{
+			ComposerPackage{Name: "behat/behat", Version: "1.1.1"},
 		},
 	}
 
@@ -106,13 +116,13 @@ func Test_DiffLock_Returns_Added_Packages(t *testing.T) {
 }
 
 func Test_DiffLock_Returns_Removed_Packages(t *testing.T) {
-	expected := Version{Name: "behat/behat", Version: "1.1.2"}
+	expected := ComposerPackage{Name: "behat/behat", Version: "1.1.2"}
 	new := Lock{
-		Packages: []Version{},
+		Packages: []ComposerPackage{},
 	}
 
 	old := Lock{
-		Packages: []Version{
+		Packages: []ComposerPackage{
 			expected,
 		},
 	}
@@ -130,15 +140,15 @@ func Test_DiffLock_Returns_Removed_Packages(t *testing.T) {
 	}
 }
 func Test_DiffLock_Returns_Removed_Packages_When_Replaced(t *testing.T) {
-	expected := Version{Name: "behat/behat", Version: "1.1.2"}
+	expected := ComposerPackage{Name: "behat/behat", Version: "1.1.2"}
 	new := Lock{
-		Packages: []Version{
-			Version{Name: "behat/behat", Version: "1.1.1"},
+		Packages: []ComposerPackage{
+			ComposerPackage{Name: "behat/behat", Version: "1.1.1"},
 		},
 	}
 
 	old := Lock{
-		Packages: []Version{
+		Packages: []ComposerPackage{
 			expected,
 		},
 	}

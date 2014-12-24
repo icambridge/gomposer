@@ -7,7 +7,6 @@ import (
 	"time"
 )
 
-// TODO reanme
 type PackageRepository struct {
 	Client   *HttpClient
 }
@@ -52,7 +51,7 @@ func (r PackageRepository) Get(packageName string) (map[string]dependency.Depend
 
 }
 
-func ToDependency(pi Version) dependency.Dependency {
+func ToDependency(pi ComposerPackage) dependency.Dependency {
 	requires := map[string]string{}
 
 	for reqPackageName, reqPackageVersion := range pi.Require {
@@ -78,7 +77,7 @@ type PackageDetail struct {
 	PackageData PackageInfo `json:"package"`
 }
 type PackageCache struct {
-	PackageData map[string]map[string]Version `json:"packages"`
+	PackageData map[string]map[string]ComposerPackage `json:"packages"`
 }
 
 type PackageInfo struct {
@@ -86,7 +85,7 @@ type PackageInfo struct {
 	Description string             `json:"description"`
 	Time        string             `json:"time"`
 	Maintainers []Maintainer       `json:"maintainers"`
-	Versions    map[string]Version `json:"versions"`
+	Versions    map[string]ComposerPackage `json:"versions"`
 	Type        string             `json:"type"`
 	Repository  string             `json:"repository"`
 	Downloads   Downloads          `json:"downloads"`
@@ -123,21 +122,19 @@ type Autoload struct {
 	Psr4     map[string]string `json:"psr-4"`
 }
 
-// TODO rename since this going to be the name composer.json
-type Version struct {
+type ComposerPackage struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	// Keywords          []string          `json:"keywords"`
-	// Homepage          string            `json:"homepage"`
+	Keywords          []string          `json:"keywords"`
+	Homepage          string            `json:"homepage"`
 	Version string `json:"version"`
-	// VersionNormalized string            `json:"version_normalized"`
-	//	License           []string          `json:"license"`
+	VersionNormalized string            `json:"version_normalized"`
+	License           []string          `json:"license"`
 	Authors []Author `json:"authors"`
 	Source  Source   `json:"source"`
 	Dist    Source   `json:"dist"`
-	// Type              string            `json:"type"`
-	// Time              string            `json:"time"`
-	// Autoload          Autoload          `json:"autoload"`
+	Type              string            `json:"type"`
+	Time              string            `json:"time"`
 	Require    map[string]string `json:"require"`
 	Replace    map[string]string `json:"replace"`
 	RequireDev map[string]string `json:"require-dev"`

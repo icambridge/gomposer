@@ -6,18 +6,14 @@ import (
 	"encoding/json"
 )
 
-type Reader interface {
-	Read(filename string) (*Version, error)
-}
-
 type PackageReader struct {
 }
 
-func (pr PackageReader) Read(filename string) (Version, error) {
+func (pr PackageReader) Read(filename string) (ComposerPackage, error) {
 
 	buf, err := os.Open(filename)
 
-	output := Version{}
+	output := ComposerPackage{}
 	if err != nil {
 		return output, err
 	}

@@ -8,15 +8,15 @@ import (
 )
 
 type Lock struct {
-	Packages    []Version `json:"packages"`
-	PackagesDev []Version `json:"packages-dev"`
+	Packages    []ComposerPackage `json:"packages"`
+	PackagesDev []ComposerPackage `json:"packages-dev"`
 }
 
 type LockGenerator struct {
 	PackageRepo PackageRepository
 }
 
-func (lg LockGenerator) Generate(dependencies map[string]string) Lock {
+func (lg LockGenerator) Generate(dependencies map[string]string) (Lock, error) {
 
 	l := Lock{}
 	packages := []string{}
@@ -30,20 +30,19 @@ func (lg LockGenerator) Generate(dependencies map[string]string) Lock {
 		p, err := lg.PackageRepo.Find(k)
 		v := dependencies[k]
 		if err != nil {
-			// TODO remove
-			panic(err)
+			return l, err
 		}
 		l.Packages = append(l.Packages, p.Versions[v])
 	}
 
-	return l
+	return l, nil
 }
 
-func DiffLock(new, old Lock) map[string][]Version {
-	added := []Version{}
-	removed := []Version{}
+func DiffLock(new, old Lock) map[string][]ComposerPackage {
+	added := []ComposerPackage{}
+	removed := []ComposerPackage{}
 
-	oldPackages := map[string]Version{}
+	oldPackages := map[string]ComposerPackage{}
 
 	for _, pkgInfo := range old.Packages {
 		oldPackages[pkgInfo.Name] = pkgInfo
@@ -68,7 +67,7 @@ func DiffLock(new, old Lock) map[string][]Version {
 		removed = append(removed, pkgInfo)
 	}
 
-	return map[string][]Version{"added": added, "removed": removed}
+	return map[string][]ComposerPackage{"added": added, "removed": removed}
 }
 
 func WriteLock(lock Lock) {
@@ -96,8 +95,8 @@ func ReadLock(filename string) (Lock, error) {
 	if err != nil {
 		if os.IsNotExist(err) {
 			err = nil
-			output.Packages = []Version{}
-			output.PackagesDev = []Version{}
+			output.Packages = []ComposerPackage{}
+			output.PackagesDev = []ComposerPackage{}
 		}
 		return output, err
 	}
