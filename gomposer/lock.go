@@ -1,10 +1,10 @@
 package gomposer
 
 import (
-	"sort"
 	"encoding/json"
 	"fmt"
 	"os"
+	"sort"
 )
 
 type Lock struct {
@@ -90,7 +90,6 @@ func ReadLock(filename string) (Lock, error) {
 
 	output := Lock{}
 	buf, err := os.Open(filename)
-
 
 	if err != nil {
 		if os.IsNotExist(err) {

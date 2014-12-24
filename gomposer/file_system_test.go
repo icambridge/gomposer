@@ -1,13 +1,13 @@
 package gomposer
 
 import (
-	"testing"
 	"os"
+	"testing"
 )
 
 func Test_Remove_Deletes_Folder(t *testing.T) {
-	vendorDir := os.TempDir()  + "/vendors"
-	dirName := vendorDir+"/symfony/symfony"
+	vendorDir := os.TempDir() + "/vendors"
+	dirName := vendorDir + "/symfony/symfony"
 	os.MkdirAll(dirName, 0744)
 	v := ComposerPackage{
 		Name: "symfony/symfony",
@@ -20,9 +20,9 @@ func Test_Remove_Deletes_Folder(t *testing.T) {
 }
 
 func Test_Remove_Deletes_Parent_Folder(t *testing.T) {
-	vendorDir := os.TempDir()  + "/vendors"
-	dirName := vendorDir+"/symfony"
-	os.MkdirAll(dirName + "/symfony", 0744)
+	vendorDir := os.TempDir() + "/vendors"
+	dirName := vendorDir + "/symfony"
+	os.MkdirAll(dirName+"/symfony", 0744)
 	v := ComposerPackage{
 		Name: "symfony/symfony",
 	}
@@ -34,9 +34,9 @@ func Test_Remove_Deletes_Parent_Folder(t *testing.T) {
 }
 
 func Test_Remove_Keeps_Parent_Folder_When_Not_Empty(t *testing.T) {
-	vendorDir := os.TempDir()  + "/vendors"
-	dirName := vendorDir+"/symfony"
-	os.MkdirAll(dirName + "/symfony", 0744)
+	vendorDir := os.TempDir() + "/vendors"
+	dirName := vendorDir + "/symfony"
+	os.MkdirAll(dirName+"/symfony", 0744)
 	fp, err := os.Create(dirName + "/remove_deletes_parent_folder")
 
 	if err != nil {

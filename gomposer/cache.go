@@ -2,11 +2,11 @@ package gomposer
 
 import (
 	"encoding/json"
-	"os"
 	"fmt"
+	"os"
 	"os/user"
-	"strings"
 	"path/filepath"
+	"strings"
 )
 
 func ReadCache(filename, packageName string) (PackageInfo, error) {
@@ -42,7 +42,6 @@ func WriteCache(packageName string, packageInfo PackageInfo) {
 	}
 
 	b, _ := json.Marshal(cache)
-
 
 	f, _ := os.Create(filename)
 	f.Write(b)

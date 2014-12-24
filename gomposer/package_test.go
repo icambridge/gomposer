@@ -7,8 +7,8 @@ import (
 
 	"net/http"
 	"net/http/httptest"
-	"testing"
 	"os"
+	"testing"
 )
 
 func getMuxAndServer() (*http.ServeMux, *httptest.Server) {

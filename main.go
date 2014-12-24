@@ -89,7 +89,7 @@ func Update(c *cli.Context) {
 	if len(diff["removed"]) != 0 {
 		Remove(diff["removed"])
 	}
-	_, found := os.Stat("vendors");
+	_, found := os.Stat("vendors")
 
 	var packages []gomposer.ComposerPackage
 

@@ -22,4 +22,3 @@ func (pr PackageReader) Read(filename string) (ComposerPackage, error) {
 
 	return output, nil
 }
-

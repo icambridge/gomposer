@@ -8,7 +8,7 @@ import (
 )
 
 type PackageRepository struct {
-	Client   *HttpClient
+	Client *HttpClient
 }
 
 func (r *PackageRepository) Find(packageName string) (PackageInfo, error) {
@@ -81,15 +81,15 @@ type PackageCache struct {
 }
 
 type PackageInfo struct {
-	Name        string             `json:"name"`
-	Description string             `json:"description"`
-	Time        string             `json:"time"`
-	Maintainers []Maintainer       `json:"maintainers"`
+	Name        string                     `json:"name"`
+	Description string                     `json:"description"`
+	Time        string                     `json:"time"`
+	Maintainers []Maintainer               `json:"maintainers"`
 	Versions    map[string]ComposerPackage `json:"versions"`
-	Type        string             `json:"type"`
-	Repository  string             `json:"repository"`
-	Downloads   Downloads          `json:"downloads"`
-	Favers      int                `json:"favers"`
+	Type        string                     `json:"type"`
+	Repository  string                     `json:"repository"`
+	Downloads   Downloads                  `json:"downloads"`
+	Favers      int                        `json:"favers"`
 }
 
 type Maintainer struct {
@@ -123,20 +123,20 @@ type Autoload struct {
 }
 
 type ComposerPackage struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
+	Name              string            `json:"name"`
+	Description       string            `json:"description"`
 	Keywords          []string          `json:"keywords"`
 	Homepage          string            `json:"homepage"`
-	Version string `json:"version"`
+	Version           string            `json:"version"`
 	VersionNormalized string            `json:"version_normalized"`
 	License           []string          `json:"license"`
-	Authors []Author `json:"authors"`
-	Source  Source   `json:"source"`
-	Dist    Source   `json:"dist"`
+	Authors           []Author          `json:"authors"`
+	Source            Source            `json:"source"`
+	Dist              Source            `json:"dist"`
 	Type              string            `json:"type"`
 	Time              string            `json:"time"`
-	Require    map[string]string `json:"require"`
-	Replace    map[string]string `json:"replace"`
-	RequireDev map[string]string `json:"require-dev"`
-	Suggest    map[string]string `json:"suggest"`
+	Require           map[string]string `json:"require"`
+	Replace           map[string]string `json:"replace"`
+	RequireDev        map[string]string `json:"require-dev"`
+	Suggest           map[string]string `json:"suggest"`
 }

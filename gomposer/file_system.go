@@ -96,8 +96,8 @@ func Extract(dirName, zipFile string) {
 }
 
 func Remove(vendorDir string, v ComposerPackage) {
-	os.RemoveAll(vendorDir+"/"+v.Name)
+	os.RemoveAll(vendorDir + "/" + v.Name)
 
 	parts := strings.Split(v.Name, "/")
-	os.Remove(vendorDir+"/"+parts[0])
+	os.Remove(vendorDir + "/" + parts[0])
 }

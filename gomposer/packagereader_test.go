@@ -26,7 +26,7 @@ func Test_PackageReader_Read(t *testing.T) {
         "symfony/symfony": "2.3.*"
     }
 }`)
-	_,err = f.Write(b)
+	_, err = f.Write(b)
 	if err != nil {
 		t.Error(err)
 	}
