@@ -10,10 +10,23 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"github.com/icambridge/cartel"
 )
 
-func Download(v ComposerPackage) {
+type DownloadOutput struct {
+	
+}
 
+func (do DownloadOutput) Value() interface {} {
+	return true
+}
+
+type DownloadTask struct {
+	Version ComposerPackage
+}
+
+func (dt DownloadTask) Execute() cartel.OutputValue {
+	v := dt.Version
 	fmt.Println(fmt.Sprintf("Downloading %s", v.Name))
 	s := GenerateRandomString(10)
 	filename := os.TempDir() + "/" + s + "." + v.Dist.Type
@@ -46,6 +59,8 @@ func Download(v ComposerPackage) {
 	Extract(dirName, filename)
 
 	os.Remove(filename)
+	
+	return DownloadOutput{}
 }
 
 func Extract(dirName, zipFile string) {

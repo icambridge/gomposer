@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/codegangsta/cli"
 	"github.com/icambridge/go-dependency"
+	"github.com/icambridge/cartel"
 	"github.com/icambridge/gomposer/gomposer"
 	"os"
 )
@@ -118,10 +119,14 @@ func Remove(packages []gomposer.ComposerPackage) {
 }
 
 func Download(packages []gomposer.ComposerPackage) {
-
+	
 	os.Mkdir("vendors", 0777)
 	fmt.Println("Downloading dependencies")
+	c := cartel.NewPool(5)
+	
 	for _, p := range packages {
-		gomposer.Download(p)
+		t := gomposer.DownloadTask{p}
+		c.Do(t)
 	}
+	c.End()
 }
