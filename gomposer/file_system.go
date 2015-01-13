@@ -4,20 +4,19 @@ import (
 	"archive/zip"
 	"bytes"
 	"fmt"
+	"github.com/icambridge/cartel"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
-	"github.com/icambridge/cartel"
 )
 
 type DownloadOutput struct {
-	
 }
 
-func (do DownloadOutput) Value() interface {} {
+func (do DownloadOutput) Value() interface{} {
 	return true
 }
 
@@ -59,7 +58,7 @@ func (dt DownloadTask) Execute() cartel.OutputValue {
 	Extract(dirName, filename)
 
 	os.Remove(filename)
-	
+
 	return DownloadOutput{}
 }
 
